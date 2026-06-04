@@ -90,7 +90,7 @@ export function checkEvidencias() {
   } catch (err: any) {
     logger.error("Evidencias", "Error leyendo evidencias", { error: err.message });
   }
-}export async function checkFrontend(port = 5173) {
+}export async function checkFrontend(port = 8081) {
   try {
     const response = await fetch(`http://localhost:${port}`);
     if (response.ok || response.status === 200) {

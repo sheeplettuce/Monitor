@@ -9,8 +9,9 @@ import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 const PORT = 3000;
-
-app.use(cors());
+app.use(cors({
+  origin: "*", // en desarrollo acepta cualquier origen
+}));
 app.use(express.json());
 
 
@@ -22,8 +23,10 @@ app.get("/", (_, res) => {
   res.json({ nombre: "Monitor API", estado: "OK" });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   logger.success("Backend", `Servidor iniciado`, { puerto: PORT });
+  runStatusChecks();
+  setInterval(runStatusChecks, 5 * 60 * 1000);
 });
 
 async function runStatusChecks() {
@@ -32,7 +35,7 @@ async function runStatusChecks() {
   await checkDatabase(prisma);
   checkDisk();
   checkEvidencias();
-  await checkFrontend(5173);
+  await checkFrontend(8081);
   logger.info("Sistema", "══════════ Verificación completada ══════════");
 }
 
