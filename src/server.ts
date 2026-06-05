@@ -6,18 +6,18 @@ import { checkBackend, checkDatabase, checkDisk, checkEvidencias, checkFrontend 
 import { prisma } from "./config/prisma.js";
 import authRoutes from "./routes/auth.routes.js";
 import healthRoutes from "./routes/health.routes.js";
+import usuariosRoutes from "./routes/usuarios.route.js";
 
 const app = express();
 const PORT = 3000;
-app.use(cors({
-  origin: "*", 
-}));
-app.use(express.json());
 
+app.use(cors({ origin: "*" }));
+app.use(express.json());
 
 // ROUTES
 app.use("/api/auth", authRoutes);
-
+app.use("/api/usuarios", usuariosRoutes);
+app.use("/api/health", healthRoutes);
 
 app.get("/", (_, res) => {
   res.json({ nombre: "Monitor API", estado: "OK" });
@@ -38,8 +38,3 @@ async function runStatusChecks() {
   await checkFrontend(8081);
   logger.info("Sistema", "══════════ Verificación completada ══════════");
 }
-
-app.use("/api/health", healthRoutes);
-
-runStatusChecks();
-setInterval(runStatusChecks, 5 * 60 * 1000);
