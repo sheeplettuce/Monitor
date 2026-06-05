@@ -5,12 +5,12 @@ import { logger } from "./utils/logger.js";
 import { checkBackend, checkDatabase, checkDisk, checkEvidencias, checkFrontend } from "./utils/statusCheck.js";
 import { prisma } from "./config/prisma.js";
 import authRoutes from "./routes/auth.routes.js";
-
+import healthRoutes from "./routes/health.routes.js";
 
 const app = express();
 const PORT = 3000;
 app.use(cors({
-  origin: "*", // en desarrollo acepta cualquier origen
+  origin: "*", 
 }));
 app.use(express.json());
 
@@ -39,6 +39,7 @@ async function runStatusChecks() {
   logger.info("Sistema", "══════════ Verificación completada ══════════");
 }
 
+app.use("/api/health", healthRoutes);
 
 runStatusChecks();
 setInterval(runStatusChecks, 5 * 60 * 1000);

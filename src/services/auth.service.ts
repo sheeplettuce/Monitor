@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { prisma } from "../config/prisma.js";
 import { logger } from "../utils/logger.js";
 
@@ -22,11 +23,24 @@ export async function loginService(username: string, password: string) {
 
     logger.success("Auth", "Login exitoso", { username, rol: usuario.rol });
 
+    const token = jwt.sign(
+      {
+        id: usuario.id,
+        username: usuario.username,
+        rol: usuario.rol,
+      },
+      process.env.JWT_SECRET!,
+      { expiresIn: "8h" }
+    );
+
     return {
-      id: usuario.id,
-      nombre: usuario.nombre,
-      username: usuario.username,
-      rol: usuario.rol,
+      token,
+      usuario: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        username: usuario.username,
+        rol: usuario.rol,
+      },
     };
 
   } catch (err: any) {
@@ -34,6 +48,7 @@ export async function loginService(username: string, password: string) {
     return null;
   }
 }
+
 export async function crearUsuarioService(
   nombre: string,
   username: string,
