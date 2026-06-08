@@ -3152,3 +3152,26 @@
 [2026-06-08T20:28:06.739Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
 [2026-06-08T20:28:06.749Z] [SUCCESS] [Frontend] En línea | {"puerto":8081,"url":"http://localhost:8081"}
 [2026-06-08T20:28:06.774Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-08T20:31:12.036Z] [SUCCESS] [Auth] Login exitoso | {"username":"ivana","rol":"Operador"}
+[2026-06-08T20:32:14.403Z] [SUCCESS] [Auth] Login exitoso | {"username":"ivana","rol":"Operador"}
+[2026-06-08T20:33:06.441Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-08T20:33:06.535Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-08T20:33:06.731Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-08T20:33:06.932Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"90.9","libre_GB":"36.1"}
+[2026-06-08T20:33:06.933Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-08T20:33:06.953Z] [SUCCESS] [Frontend] En línea | {"puerto":8081,"url":"http://localhost:8081"}
+[2026-06-08T20:33:06.954Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-08T20:38:06.449Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-08T20:38:06.523Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-08T20:38:06.582Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-08T20:38:06.726Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"90.9","libre_GB":"36.1"}
+[2026-06-08T20:38:06.728Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-08T20:38:06.738Z] [SUCCESS] [Frontend] En línea | {"puerto":8081,"url":"http://localhost:8081"}
+[2026-06-08T20:38:06.739Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-08T20:43:06.457Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-08T20:43:06.558Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-08T20:43:06.750Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-08T20:43:06.952Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"90.9","libre_GB":"36.1"}
+[2026-06-08T20:43:06.954Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-08T20:43:06.967Z] [SUCCESS] [Frontend] En línea | {"puerto":8081,"url":"http://localhost:8081"}
+[2026-06-08T20:43:06.968Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
