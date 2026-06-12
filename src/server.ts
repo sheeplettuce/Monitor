@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import os from "os";
 import { logger } from "./utils/logger.js";
 import { checkBackend, checkDatabase, checkDisk, checkEvidencias, checkFrontend } from "./utils/statusCheck.js";
 import { prisma } from "./config/prisma.js";
@@ -21,6 +22,21 @@ app.use("/api/health", healthRoutes);
 
 app.get("/", (_, res) => {
   res.json({ nombre: "Monitor API", estado: "OK" });
+});
+
+app.get("/discovery", (_, res) => {
+  const interfaces = os.networkInterfaces();
+  const ips: string[] = [];
+
+  for (const iface of Object.values(interfaces)) {
+    for (const addr of iface ?? []) {
+      if (addr.family === "IPv4" && !addr.internal) {
+        ips.push(addr.address);
+      }
+    }
+  }
+
+  res.json({ nombre: "Monitor API", ips });
 });
 
 app.listen(PORT, "0.0.0.0", () => {
