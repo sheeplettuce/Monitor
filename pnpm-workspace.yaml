@@ -1,6 +1,9 @@
 packages:
   - '.'
 
+overrides:
+  esbuild: "0.19.12"
+
 allowBuilds:
   '@prisma/client': true
   '@prisma/engines': true
