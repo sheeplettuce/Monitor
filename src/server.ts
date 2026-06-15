@@ -15,21 +15,6 @@ const PORT = 3000;
 const isWindows = process.platform === "win32";
 const isMac = process.platform === "darwin";
 
-// Configurar hostname para DNS local
-function configurarHostname() {
-  try {
-    if (isMac) {
-      execSync("sudo scutil --set HostName monitor-server", { stdio: "ignore" });
-      execSync("sudo scutil --set LocalHostName monitor-server", { stdio: "ignore" });
-      execSync("sudo scutil --set ComputerName monitor-server", { stdio: "ignore" });
-    } else if (isWindows) {
-      execSync("netsh advfirewall firewall add rule name=\"Monitor API 3000\" dir=in action=allow protocol=TCP localport=3000", { stdio: "ignore" });
-    }
-  } catch {
-    logger.warn("Sistema", "No se pudo configurar hostname automaticamente, puede requerir permisos de administrador");
-  }
-}
-
 // Obtener IP local
 function getLocalIP(): string {
   const interfaces = os.networkInterfaces();
@@ -56,8 +41,6 @@ function getHostname(): string {
     return os.hostname();
   }
 }
-
-configurarHostname();
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());
