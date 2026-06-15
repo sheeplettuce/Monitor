@@ -256,6 +256,9 @@ importers:
       '@types/pg':
         specifier: ^8.20.0
         version: 8.20.0
+      esbuild:
+        specifier: 0.19.12
+        version: 0.19.12
       prisma:
         specifier: ^5.22.0
         version: 5.22.0
