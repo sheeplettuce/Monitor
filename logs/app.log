@@ -797,3 +797,14 @@
 [2026-06-15T23:10:58.063Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
 [2026-06-15T23:10:58.167Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
 [2026-06-15T23:10:58.168Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-15T23:37:19.925Z] [WARN] [Sistema] No se pudo configurar hostname automaticamente, puede requerir permisos de administrador
+[2026-06-15T23:37:20.051Z] [SUCCESS] [Backend] Servidor iniciado | {"puerto":3000}
+[2026-06-15T23:37:20.051Z] [INFO] [Red] IP local | {"ip":"192.168.0.137"}
+[2026-06-15T23:37:20.052Z] [INFO] [Red] Nombre del servidor | {"hostname":"DESKTOP-TGATAIA","dns":"DESKTOP-TGATAIA.local"}
+[2026-06-15T23:37:20.053Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-15T23:37:20.127Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-15T23:37:20.254Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-15T23:37:20.487Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"103.5","libre_GB":"23.4"}
+[2026-06-15T23:37:20.489Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-15T23:37:20.547Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-15T23:37:20.547Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
