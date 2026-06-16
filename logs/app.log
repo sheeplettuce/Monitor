@@ -818,3 +818,76 @@
 [2026-06-16T00:28:19.352Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
 [2026-06-16T00:28:19.399Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
 [2026-06-16T00:28:19.401Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T00:33:18.793Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T00:33:18.921Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T00:33:18.924Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T00:33:19.060Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"103.5","libre_GB":"23.4"}
+[2026-06-16T00:33:19.061Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T00:33:19.065Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T00:33:19.066Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T00:38:18.804Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T00:38:18.875Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T00:38:18.924Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T00:38:19.033Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"103.5","libre_GB":"23.4"}
+[2026-06-16T00:38:19.034Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T00:38:19.036Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T00:38:19.037Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T00:43:18.815Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T00:43:18.874Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T00:43:18.876Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T00:43:19.002Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"103.5","libre_GB":"23.4"}
+[2026-06-16T00:43:19.003Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T00:43:19.006Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T00:43:19.007Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T00:48:18.827Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T00:48:18.906Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T00:48:19.110Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T00:48:19.312Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"102.8","libre_GB":"24.1"}
+[2026-06-16T00:48:19.313Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T00:48:19.316Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T00:48:19.316Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T00:53:18.918Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T00:53:19.943Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T00:53:20.852Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T00:53:23.312Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"102.9","libre_GB":"24.0"}
+[2026-06-16T00:53:23.406Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T00:53:23.571Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T00:53:23.645Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T00:58:18.977Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T00:58:20.409Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T00:58:20.632Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T00:58:23.766Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"103.1","libre_GB":"23.9"}
+[2026-06-16T00:58:23.796Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T00:58:23.937Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T00:58:23.996Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T01:03:18.974Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T01:03:19.401Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T01:03:19.561Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T01:03:20.003Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"103.7","libre_GB":"23.2"}
+[2026-06-16T01:03:20.004Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T01:03:20.160Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T01:03:20.162Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T01:08:18.972Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T01:08:19.084Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T01:08:19.086Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T01:08:19.448Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"103.8","libre_GB":"23.2"}
+[2026-06-16T01:08:19.449Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T01:08:19.560Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T01:08:19.561Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T01:13:18.987Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T01:13:19.045Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T01:13:19.120Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T01:13:19.295Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"103.8","libre_GB":"23.2"}
+[2026-06-16T01:13:19.296Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T01:13:19.300Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T01:13:19.301Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T01:21:47.313Z] [SUCCESS] [Backend] Servidor iniciado | {"puerto":3000}
+[2026-06-16T01:21:47.315Z] [INFO] [Red] IP local | {"ip":"192.168.0.137"}
+[2026-06-16T01:21:47.315Z] [INFO] [Red] Nombre del servidor | {"hostname":"DESKTOP-TGATAIA","dns":"DESKTOP-TGATAIA.local"}
+[2026-06-16T01:21:47.316Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T01:21:47.422Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T01:21:47.505Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T01:21:47.691Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"103.8","libre_GB":"23.2"}
+[2026-06-16T01:21:47.692Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T01:21:47.742Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T01:21:47.742Z] [INFO] [Sistema] ══════════ Verificación completada ══════════

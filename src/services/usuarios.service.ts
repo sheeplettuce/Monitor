@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import { prisma } from "../config/prisma.js";
 import { logger } from "../utils/logger.js";
 
