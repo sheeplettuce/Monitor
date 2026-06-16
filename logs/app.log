@@ -891,3 +891,59 @@
 [2026-06-16T01:21:47.692Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
 [2026-06-16T01:21:47.742Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
 [2026-06-16T01:21:47.742Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T01:22:47.106Z] [SUCCESS] [Backend] Servidor iniciado | {"puerto":3000}
+[2026-06-16T01:22:47.107Z] [INFO] [Red] IP local | {"ip":"192.168.0.114"}
+[2026-06-16T01:22:47.109Z] [INFO] [Red] Nombre del servidor | {"hostname":"monitor-server","dns":"monitor-server.local"}
+[2026-06-16T01:22:47.109Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T01:22:47.187Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T01:22:47.220Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T01:22:47.230Z] [ERROR] [Disco] No se pudo leer el disco | {"error":"Command failed: df -BGB . --output=avail,used,size\ndf: illegal option -- B\nusage: df [-b | -H | -h | -k | -m | -g | -P] [-ailn] [-T type] [-t] [filesystem ...]\n"}
+[2026-06-16T01:22:47.231Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T01:22:47.287Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T01:22:47.288Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T01:23:25.234Z] [ERROR] [Auth] Error en login | {"error":"\nInvalid `prisma.usuario.findUnique()` invocation in\n/Users/dulthin/Monitor/src/services/auth.service.ts:8:42\n\n  5 \n  6 export async function loginService(username: string, password: string) {\n  7   try {\n→ 8     const usuario = await prisma.usuario.findUnique(\nThe table `public.usuario` does not exist in the current database."}
+[2026-06-16T01:23:26.819Z] [ERROR] [Auth] Error en login | {"error":"\nInvalid `prisma.usuario.findUnique()` invocation in\n/Users/dulthin/Monitor/src/services/auth.service.ts:8:42\n\n  5 \n  6 export async function loginService(username: string, password: string) {\n  7   try {\n→ 8     const usuario = await prisma.usuario.findUnique(\nThe table `public.usuario` does not exist in the current database."}
+[2026-06-16T01:23:27.531Z] [ERROR] [Auth] Error en login | {"error":"\nInvalid `prisma.usuario.findUnique()` invocation in\n/Users/dulthin/Monitor/src/services/auth.service.ts:8:42\n\n  5 \n  6 export async function loginService(username: string, password: string) {\n  7   try {\n→ 8     const usuario = await prisma.usuario.findUnique(\nThe table `public.usuario` does not exist in the current database."}
+[2026-06-16T01:23:28.048Z] [ERROR] [Auth] Error en login | {"error":"\nInvalid `prisma.usuario.findUnique()` invocation in\n/Users/dulthin/Monitor/src/services/auth.service.ts:8:42\n\n  5 \n  6 export async function loginService(username: string, password: string) {\n  7   try {\n→ 8     const usuario = await prisma.usuario.findUnique(\nThe table `public.usuario` does not exist in the current database."}
+[2026-06-16T01:23:28.512Z] [ERROR] [Auth] Error en login | {"error":"\nInvalid `prisma.usuario.findUnique()` invocation in\n/Users/dulthin/Monitor/src/services/auth.service.ts:8:42\n\n  5 \n  6 export async function loginService(username: string, password: string) {\n  7   try {\n→ 8     const usuario = await prisma.usuario.findUnique(\nThe table `public.usuario` does not exist in the current database."}
+[2026-06-16T01:23:29.252Z] [ERROR] [Auth] Error en login | {"error":"\nInvalid `prisma.usuario.findUnique()` invocation in\n/Users/dulthin/Monitor/src/services/auth.service.ts:8:42\n\n  5 \n  6 export async function loginService(username: string, password: string) {\n  7   try {\n→ 8     const usuario = await prisma.usuario.findUnique(\nThe table `public.usuario` does not exist in the current database."}
+[2026-06-16T01:30:48.268Z] [SUCCESS] [Backend] Servidor iniciado | {"puerto":3000}
+[2026-06-16T01:30:48.269Z] [INFO] [Red] IP local | {"ip":"192.168.0.114"}
+[2026-06-16T01:30:48.271Z] [INFO] [Red] Nombre del servidor | {"hostname":"monitor-server","dns":"monitor-server.local"}
+[2026-06-16T01:30:48.272Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T01:30:48.358Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T01:30:48.398Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T01:30:48.409Z] [ERROR] [Disco] No se pudo leer el disco | {"error":"Command failed: df -BGB . --output=avail,used,size\ndf: illegal option -- B\nusage: df [-b | -H | -h | -k | -m | -g | -P] [-ailn] [-T type] [-t] [filesystem ...]\n"}
+[2026-06-16T01:30:48.409Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T01:30:48.470Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T01:30:48.471Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T01:30:55.889Z] [SUCCESS] [Auth] Login exitoso | {"username":"carlos","rol":"Administrador"}
+[2026-06-16T01:31:05.021Z] [SUCCESS] [Auth] Login exitoso | {"username":"carlos","rol":"Administrador"}
+[2026-06-16T01:31:31.578Z] [SUCCESS] [Auth] Usuario creado | {"username":"juan","rol":"Administrador"}
+[2026-06-16T01:31:42.293Z] [SUCCESS] [Auth] Login exitoso | {"username":"juan","rol":"Administrador"}
+[2026-06-16T01:32:06.885Z] [SUCCESS] [Auth] Usuario creado | {"username":"fran","rol":"Operador"}
+[2026-06-16T01:32:16.544Z] [SUCCESS] [Usuarios] Usuario eliminado | {"id":3}
+[2026-06-16T01:35:48.359Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T01:35:48.440Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T01:35:48.462Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T01:35:48.472Z] [ERROR] [Disco] No se pudo leer el disco | {"error":"Command failed: df -BGB . --output=avail,used,size\ndf: illegal option -- B\nusage: df [-b | -H | -h | -k | -m | -g | -P] [-ailn] [-T type] [-t] [filesystem ...]\n"}
+[2026-06-16T01:35:48.473Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T01:35:48.480Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T01:35:48.480Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T01:40:48.360Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T01:40:48.439Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T01:40:48.440Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T01:40:48.450Z] [ERROR] [Disco] No se pudo leer el disco | {"error":"Command failed: df -BGB . --output=avail,used,size\ndf: illegal option -- B\nusage: df [-b | -H | -h | -k | -m | -g | -P] [-ailn] [-T type] [-t] [filesystem ...]\n"}
+[2026-06-16T01:40:48.453Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T01:40:48.456Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T01:40:48.457Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T01:42:50.426Z] [SUCCESS] [Backend] Servidor iniciado | {"puerto":3000}
+[2026-06-16T01:42:50.427Z] [INFO] [Red] IP local | {"ip":"192.168.0.114"}
+[2026-06-16T01:42:50.429Z] [INFO] [Red] Nombre del servidor | {"hostname":"monitor-server","dns":"monitor-server.local"}
+[2026-06-16T01:42:50.429Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T01:42:50.509Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T01:42:50.540Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T01:42:50.551Z] [ERROR] [Disco] No se pudo leer el disco | {"error":"Command failed: df -BGB . --output=avail,used,size\ndf: illegal option -- B\nusage: df [-b | -H | -h | -k | -m | -g | -P] [-ailn] [-T type] [-t] [filesystem ...]\n"}
+[2026-06-16T01:42:50.551Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T01:42:50.609Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T01:42:50.611Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
