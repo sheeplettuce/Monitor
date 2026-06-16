@@ -947,3 +947,14 @@
 [2026-06-16T01:42:50.551Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
 [2026-06-16T01:42:50.609Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
 [2026-06-16T01:42:50.611Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-06-16T02:21:04.586Z] [INFO] [Red] Servicio mDNS anunciado | {"tipo":"_monitor._tcp"}
+[2026-06-16T02:21:04.587Z] [SUCCESS] [Backend] Servidor iniciado | {"puerto":3000}
+[2026-06-16T02:21:04.587Z] [INFO] [Red] IP local | {"ip":"192.168.0.137"}
+[2026-06-16T02:21:04.589Z] [INFO] [Red] Nombre del servidor | {"hostname":"DESKTOP-TGATAIA","dns":"DESKTOP-TGATAIA.local"}
+[2026-06-16T02:21:04.590Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-06-16T02:21:04.661Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-06-16T02:21:04.746Z] [SUCCESS] [PostgreSQL] Conexión exitosa a la base de datos
+[2026-06-16T02:21:04.974Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"103.8","libre_GB":"23.2"}
+[2026-06-16T02:21:04.975Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
+[2026-06-16T02:21:05.044Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-06-16T02:21:05.044Z] [INFO] [Sistema] ══════════ Verificación completada ══════════

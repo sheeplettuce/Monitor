@@ -9,6 +9,7 @@ import { prisma } from "./config/prisma.js";
 import authRoutes from "./routes/auth.routes.js";
 import healthRoutes from "./routes/health.routes.js";
 import usuariosRoutes from "./routes/usuarios.route.js";
+import { Bonjour } from "bonjour-service";
 
 const app = express();
 const PORT = 3000;
@@ -72,6 +73,13 @@ app.get("/discovery", (_, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   const ip = getLocalIP();
   const hostname = getHostname();
+  const bonjour = new Bonjour();
+    bonjour.publish({
+    name: "Monitor API",
+    type: "monitor",
+    port: PORT,
+});
+logger.info("Red", "Servicio mDNS anunciado", { tipo: "_monitor._tcp" });
 
   logger.success("Backend", `Servidor iniciado`, { puerto: PORT });
   logger.info("Red", `IP local`, { ip });

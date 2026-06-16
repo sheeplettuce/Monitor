@@ -23,6 +23,7 @@
     "@prisma/adapter-pg": "5.22.0",
     "@prisma/client": "^5.22.0",
     "bcrypt": "^6.0.0",
+    "bonjour-service": "^1.4.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/bcryptjs": "^3.0.0",
+    "@types/bonjour": "^3.5.13",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
