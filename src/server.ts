@@ -78,6 +78,7 @@ app.listen(PORT, "0.0.0.0", () => {
     name: "Monitor API",
     type: "monitor",
     port: PORT,
+    host: getLocalIP(),
 });
 logger.info("Red", "Servicio mDNS anunciado", { tipo: "_monitor._tcp" });
 
