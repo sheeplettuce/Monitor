@@ -46,6 +46,10 @@ function getHostname(): string {
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
+app.get("/ping", (_, res) => {
+  res.json({ ok: true, nombre: "Monitor API" });
+});
+
 // ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", usuariosRoutes);
