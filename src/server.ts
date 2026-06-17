@@ -78,7 +78,7 @@ app.listen(PORT, "0.0.0.0", () => {
   const bonjour = new Bonjour();
     bonjour.publish({
     name: "Monitor API",
-    type: "monitor",
+    type: "_monitor",
     port: PORT,
     txt: {
     ipv4: getLocalIP(),
