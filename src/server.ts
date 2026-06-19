@@ -9,7 +9,26 @@ import { prisma } from "./config/prisma.js";
 import authRoutes from "./routes/auth.routes.js";
 import healthRoutes from "./routes/health.routes.js";
 import usuariosRoutes from "./routes/usuarios.route.js";
+import expedientesRoutes from "./routes/expedientes.routes.js";
 import { Bonjour } from "bonjour-service";
+import { seedAseguradoras } from "./utils/seedAseguradoras.js";
+
+await seedAseguradoras();
+async function startServer() {
+  try {
+    await seedAseguradoras();
+
+    app.listen(PORT, () => {
+      console.log(`Servidor iniciado en puerto ${PORT}`);
+    });
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+}
+
+startServer();
+
 
 const app = express();
 const PORT = 3000;
@@ -52,6 +71,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/health", healthRoutes);
+app.use("/api/expedientes", expedientesRoutes);
 
 app.get("/", (_, res) => {
   res.json({ nombre: "Monitor API", estado: "OK" });

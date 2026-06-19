@@ -41,3 +41,11 @@ export function soloAdmin(req: AuthRequest, res: Response, next: NextFunction) {
   }
   next();
 }
+
+export function soloAdminOOperador(req: AuthRequest, res: Response, next: NextFunction) {
+  const rol = req.usuario?.rol;
+  if (rol !== "Administrador" && rol !== "Operador") {
+    return res.status(403).json({ error: "Acceso restringido a administradores y operadores" });
+  }
+  next();
+}
