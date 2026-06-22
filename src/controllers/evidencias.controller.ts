@@ -1,0 +1,91 @@
+import { Response } from "express";
+import { AuthRequest } from "../middleware/auth.middleware.js";
+import {
+  crearEvidenciaService,
+  listarEvidenciasService,
+  eliminarEvidenciaService,
+} from "../services/evidencias.service.js";
+
+function esError(r: unknown): r is { error: string } {
+  return typeof r === "object" && r !== null && "error" in r;
+}
+
+export async function subirEvidencia(req: AuthRequest, res: Response) {
+    console.log("=== SUBIR EVIDENCIA ===");
+    console.log("params:", req.params);
+    console.log("file:", req.file);
+
+    const no_siniestro = req.params.no_siniestro;
+
+  if (typeof no_siniestro !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Número de siniestro inválido" });
+  }
+
+  const archivo = req.file;
+
+  if (!archivo) {
+    return res
+      .status(400)
+      .json({ error: "No se recibió ningún archivo" });
+  }
+
+  const result = await crearEvidenciaService({
+    no_siniestro,
+    tipo: archivo.mimetype,
+    nombre_archivo: archivo.originalname,
+    ruta: archivo.path,
+    subido_por: req.usuario?.id,
+  });
+
+  if (esError(result)) {
+    const status = result.error.includes("no encontrado") ? 404 : 500;
+    return res.status(status).json(result);
+  }
+
+  return res.status(201).json(result);
+}
+
+export async function listarEvidencias(req: AuthRequest, res: Response) {
+  const no_siniestro = req.params.no_siniestro;
+
+  if (typeof no_siniestro !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Número de siniestro inválido" });
+  }
+
+  const result = await listarEvidenciasService(no_siniestro);
+
+  if (esError(result)) {
+    return res.status(500).json(result);
+  }
+
+  return res.json(result);
+}
+
+export async function eliminarEvidencia(req: AuthRequest, res: Response) {
+  const no_siniestro = req.params.no_siniestro;
+
+  if (typeof no_siniestro !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Número de siniestro inválido" });
+  }
+
+  const id = Number(req.params.id);
+
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "ID inválido" });
+  }
+
+  const result = await eliminarEvidenciaService(id);
+
+  if (esError(result)) {
+    const status = result.error.includes("no encontrada") ? 404 : 500;
+    return res.status(status).json(result);
+  }
+
+  return res.json(result);
+}

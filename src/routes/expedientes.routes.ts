@@ -12,6 +12,7 @@ import {
   soloAdmin,
   soloAdminOOperador,
 } from "../middleware/auth.middleware.js";
+import evidenciasRoutes from "./evidencias.routes.js";
 
 const router = Router();
 
@@ -34,6 +35,14 @@ router.get(
   "/aseguradoras",
   verificarToken,
   listarAseguradoras
+);
+
+// ⚠️ El sub-router de evidencias debe ir ANTES de "/:no_siniestro"
+//    para que Express no intente resolver "/evidencias" dentro de él
+//    como si fuera el propio handler de obtenerExpediente.
+router.use(
+  "/:no_siniestro/evidencias",
+  evidenciasRoutes
 );
 
 router.get(
