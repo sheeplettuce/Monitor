@@ -287,7 +287,24 @@ export async function eliminarExpedienteService(
     });
     if (!existe) return { error: "Expediente no encontrado" };
 
-    await prisma.expediente.delete({ where: { no_siniestro } });
+    // El expediente tiene varias tablas hijas con FK sin cascada
+    // (checklist_item, checklist, levantamiento_concepto,
+    // levantamiento_danios, evidencia, historial_estado). Hay que
+    // eliminarlas todas, de hija a padre, antes de borrar el expediente,
+    // dentro de una transacción para que sea todo o nada.
+    await prisma.$transaction([
+      prisma.checklist_item.deleteMany({
+        where: { checklist: { no_siniestro } },
+      }),
+      prisma.checklist.deleteMany({ where: { no_siniestro } }),
+      prisma.levantamiento_concepto.deleteMany({
+        where: { levantamiento_danios: { no_siniestro } },
+      }),
+      prisma.levantamiento_danios.deleteMany({ where: { no_siniestro } }),
+      prisma.evidencia.deleteMany({ where: { no_siniestro } }),
+      prisma.historial_estado.deleteMany({ where: { no_siniestro } }),
+      prisma.expediente.delete({ where: { no_siniestro } }),
+    ]);
 
     logger.success("Expedientes", "Expediente eliminado", { no_siniestro });
     return { ok: true, no_siniestro };

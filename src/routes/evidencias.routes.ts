@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import fsp from "fs/promises";
 import {
   subirEvidencia,
   listarEvidencias,
@@ -69,6 +70,35 @@ router.delete(
   verificarToken,
   soloAdmin,
   eliminarEvidencia
+);
+
+// DELETE /api/expedientes/:no_siniestro/evidencias
+// Elimina la carpeta completa del expediente (usado al cancelar creación)
+router.delete(
+  "/",
+  verificarToken,
+  soloAdminOOperador,
+  async (req, res) => {
+    const no_siniestro = req.params.no_siniestro;
+    if (typeof no_siniestro !== "string") {
+      return res.status(400).json({ error: "Número de siniestro inválido" });
+    }
+
+    const carpeta = path.join(EVIDENCIAS_BASE, no_siniestro);
+
+    // seguridad: nunca borrar fuera de EVIDENCIAS_BASE
+    if (!carpeta.startsWith(EVIDENCIAS_BASE)) {
+      return res.status(400).json({ error: "Ruta inválida" });
+    }
+
+    try {
+      await fsp.rm(carpeta, { recursive: true, force: true });
+      return res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error("Error eliminando carpeta de evidencias:", err);
+      return res.status(500).json({ error: "No se pudo eliminar la carpeta" });
+    }
+  }
 );
 
 export default router;

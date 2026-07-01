@@ -20,8 +20,11 @@ import authRoutes from "./routes/auth.routes.js";
 import healthRoutes from "./routes/health.routes.js";
 import usuariosRoutes from "./routes/usuarios.route.js";
 import expedientesRoutes from "./routes/expedientes.routes.js";
+import levantamientoRoutes from "./routes/levantamiento.routes.js";
 
 import { seedAseguradoras } from "./utils/seedAseguradoras.js";
+import { obtenerLevantamientoPorSiniestro } from "./controllers/levantamiento.controller.js";
+import router from "./routes/levantamiento.routes.js";
 
 const app = express();
 const PORT = 3000;
@@ -82,6 +85,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/expedientes", expedientesRoutes);
+app.use("/api", levantamientoRoutes);
 
 app.get("/", (_, res) => {
   res.json({
