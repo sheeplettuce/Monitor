@@ -23,11 +23,20 @@ import expedientesRoutes from "./routes/expedientes.routes.js";
 import levantamientoRoutes from "./routes/levantamiento.routes.js";
 
 import { seedAseguradoras } from "./utils/seedAseguradoras.js";
-import { obtenerLevantamientoPorSiniestro } from "./controllers/levantamiento.controller.js";
-import router from "./routes/levantamiento.routes.js";
+
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 const PORT = 3000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(
+  "/evidencias",
+  express.static(path.join(__dirname, "..", "evidencias"))
+);
 
 const isWindows = process.platform === "win32";
 const isMac = process.platform === "darwin";
@@ -80,6 +89,10 @@ app.use(express.json());
 // ─────────────────────────────────────────────────────────────
 // Routes
 // ─────────────────────────────────────────────────────────────
+// El sub-router de "estado" (cambiar estado + historial) ya viene
+// montado DENTRO de expedientes.routes.ts, colgado de
+// "/:no_siniestro/estado" — mismo patrón que evidenciasRoutes.
+// No hace falta (ni debe) montarse aquí por separado.
 
 app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", usuariosRoutes);

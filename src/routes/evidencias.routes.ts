@@ -22,15 +22,15 @@ const EVIDENCIAS_BASE = path.join(__dirname, "..", "..", "evidencias");
 
 const storage = multer.diskStorage({
     destination(req, _file, cb) {
-    const no_siniestro = req.params.no_siniestro;
-    if (typeof no_siniestro !== "string") return cb(new Error("Número de siniestro inválido"), "");
+  const no_siniestro = req.params.no_siniestro;
+  if (typeof no_siniestro !== "string") return cb(new Error("Número de siniestro inválido"), "");
 
-    const tipo = (req.query.tipo as string) === "documento" ? "DOCUMENTOS REPARACION" : "evidencias";
-    const carpeta = path.join(EVIDENCIAS_BASE, no_siniestro, tipo);
+  const tipo = (req.body.tipo as string) === "documento" ? "DOCUMENTOS REPARACION" : "evidencias";
+  const carpeta = path.join(EVIDENCIAS_BASE, no_siniestro, tipo);
 
-    fs.mkdirSync(carpeta, { recursive: true });
-    cb(null, carpeta);
-    },
+  fs.mkdirSync(carpeta, { recursive: true });
+  cb(null, carpeta);
+},
 
   filename(_req, file, cb) {
     const ts = Date.now();

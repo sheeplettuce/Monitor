@@ -31,13 +31,15 @@ export async function subirEvidencia(req: AuthRequest, res: Response) {
       .json({ error: "No se recibió ningún archivo" });
   }
 
-  const result = await crearEvidenciaService({
-    no_siniestro,
-    tipo: archivo.mimetype,
-    nombre_archivo: archivo.originalname,
-    ruta: archivo.path,
-    subido_por: req.usuario?.id,
-  });
+  const categoria = req.body.tipo === "documento" ? "documento" : "evidencia";
+
+const result = await crearEvidenciaService({
+  no_siniestro,
+  tipo: categoria,
+  nombre_archivo: archivo.originalname,
+  ruta: archivo.path,
+  subido_por: req.usuario?.id,
+});
 
   if (esError(result)) {
     const status = result.error.includes("no encontrado") ? 404 : 500;

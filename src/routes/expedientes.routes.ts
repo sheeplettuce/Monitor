@@ -13,63 +13,19 @@ import {
   soloAdminOOperador,
 } from "../middleware/auth.middleware.js";
 import evidenciasRoutes from "./evidencias.routes.js";
+import estadosRoutes from "./estados.routes.js";
 
 const router = Router();
 
-// GET  /expedientes              → todos los roles autenticados
-// GET  /expedientes/aseguradoras → todos los roles autenticados
-//   ⚠️  /aseguradoras debe ir ANTES de /:no_siniestro para que Express
-//      no lo interprete como parámetro dinámico.
-// GET  /expedientes/:no_siniestro → todos los roles autenticados
-// POST /expedientes              → Admin y Operador (Técnico solo lectura según ERS)
-// PUT  /expedientes/:no_siniestro → Admin y Operador
-// DELETE /expedientes/:no_siniestro → solo Admin
+router.get("/", verificarToken, listarExpedientes);
+router.get("/aseguradoras", verificarToken, listarAseguradoras);
 
-router.get(
-  "/",
-  verificarToken,
-  listarExpedientes
-);
+router.use("/:no_siniestro/evidencias", evidenciasRoutes);
+router.use("/:no_siniestro/estado", estadosRoutes);
 
-router.get(
-  "/aseguradoras",
-  verificarToken,
-  listarAseguradoras
-);
-
-// ⚠️ El sub-router de evidencias debe ir ANTES de "/:no_siniestro"
-//    para que Express no intente resolver "/evidencias" dentro de él
-//    como si fuera el propio handler de obtenerExpediente.
-router.use(
-  "/:no_siniestro/evidencias",
-  evidenciasRoutes
-);
-
-router.get(
-  "/:no_siniestro",
-  verificarToken,
-  obtenerExpediente
-);
-
-router.post(
-  "/",
-  verificarToken,
-  soloAdminOOperador,
-  crearExpediente
-);
-
-router.put(
-  "/:no_siniestro",
-  verificarToken,
-  soloAdminOOperador,
-  actualizarExpediente
-);
-
-router.delete(
-  "/:no_siniestro",
-  verificarToken,
-  soloAdmin,
-  eliminarExpediente
-);
+router.get("/:no_siniestro", verificarToken, obtenerExpediente);
+router.post("/", verificarToken, soloAdminOOperador, crearExpediente);
+router.put("/:no_siniestro", verificarToken, soloAdminOOperador, actualizarExpediente);
+router.delete("/:no_siniestro", verificarToken, soloAdmin, eliminarExpediente);
 
 export default router;
