@@ -31,13 +31,10 @@ export async function cambiarEstado(req: AuthRequest, res: Response) {
     });
   }
 
-  const esAdmin = req.usuario?.rol === "Administrador";
-
   const result = await cambiarEstadoService(
     no_siniestro,
     estado as estado_enum,
-    req.usuario?.id,
-    esAdmin
+    req.usuario?.id
   );
 
   if (esError(result)) {

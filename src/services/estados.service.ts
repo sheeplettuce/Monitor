@@ -4,26 +4,10 @@ import { estado_enum } from "@prisma/client";
 
 export type ServiceError = { error: string };
 
-// Orden en el que deben transicionar los expedientes normalmente
-const ORDEN_ESTADOS: estado_enum[] = [
-  "Ingreso",
-  "Restauracion",
-  "Pendiente_de_salida",
-  "Salida",
-];
-
-function esAvanceValido(actual: estado_enum, nuevo: estado_enum): boolean {
-  const idxActual = ORDEN_ESTADOS.indexOf(actual);
-  const idxNuevo = ORDEN_ESTADOS.indexOf(nuevo);
-  // Solo se permite avanzar un paso a la vez
-  return idxNuevo === idxActual + 1;
-}
-
 export async function cambiarEstadoService(
   no_siniestro: string,
   nuevo_estado: estado_enum,
-  cambiado_por: number | undefined,
-  esAdmin: boolean
+  cambiado_por: number | undefined
 ): Promise<Awaited<ReturnType<typeof prisma.expediente.update>> | ServiceError> {
   try {
     const expediente = await prisma.expediente.findUnique({
@@ -39,19 +23,9 @@ export async function cambiarEstadoService(
       return { error: "El expediente ya se encuentra en ese estado" };
     }
 
-    // Operador/Tecnico solo avanzan un paso a la vez.
-    // Admin puede mover el expediente a cualquier estado (correcciones).
-    if (!esAdmin && !esAvanceValido(estado_actual, nuevo_estado)) {
-      return {
-        error:
-          "No se puede cambiar de \"" +
-          estado_actual +
-          "\" a \"" +
-          nuevo_estado +
-          "\". El flujo es: " +
-          ORDEN_ESTADOS.join(" -> "),
-      };
-    }
+    // Administrador y Operador tienen el mismo nivel de acceso para
+    // cambiar el estado a cualquier valor (ver matriz de roles IEEE 830).
+    // Técnico nunca llega aquí: la ruta ya lo bloquea con soloAdminOOperador.
 
     const [, expedienteActualizado] = await prisma.$transaction([
       prisma.historial_estado.create({
@@ -85,9 +59,7 @@ export async function cambiarEstadoService(
 
 export async function obtenerHistorialEstadoService(
   no_siniestro: string
-): Promise<
-  Awaited<ReturnType<typeof prisma.historial_estado.findMany>> | ServiceError
-> {
+): Promise<Awaited<ReturnType<typeof prisma.historial_estado.findMany>> | ServiceError> {
   try {
     const expediente = await prisma.expediente.findUnique({
       where: { no_siniestro },
