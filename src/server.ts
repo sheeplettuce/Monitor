@@ -21,6 +21,8 @@ import healthRoutes from "./routes/health.routes.js";
 import usuariosRoutes from "./routes/usuarios.route.js";
 import expedientesRoutes from "./routes/expedientes.routes.js";
 import levantamientoRoutes from "./routes/levantamiento.routes.js";
+import checklistRoutes from "./routes/checklist.routes.js";
+import comentario from "./routes/comentario.routes.js";
 
 import { seedAseguradoras } from "./utils/seedAseguradoras.js";
 
@@ -99,6 +101,8 @@ app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/expedientes", expedientesRoutes);
 app.use("/api", levantamientoRoutes);
+app.use("/api", checklistRoutes);
+app.use("/api", comentario);
 
 app.get("/", (_, res) => {
   res.json({
