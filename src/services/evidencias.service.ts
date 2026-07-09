@@ -3,6 +3,7 @@ import { logger } from "../utils/logger.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { subirCarpetaEvidencias } from "./backup.service.js";
 
 export type ServiceError = { error: string };
 
@@ -87,6 +88,38 @@ export async function eliminarEvidenciaService(
   } catch (err: any) {
     logger.error("Evidencias", "Error al eliminar evidencia", { error: err.message });
     return { error: "Error interno al eliminar evidencia" };
+  }
+}
+
+//subir evidencias a la nube
+
+export async function respaldarEvidenciasExpedienteService(
+  no_siniestro: string
+): Promise<{ ok: true; subidas: number } | ServiceError> {
+  try {
+    const carpetaLocal = path.join(EVIDENCIAS_DIR, no_siniestro);
+
+    const keysSubidas = await subirCarpetaEvidencias(carpetaLocal, no_siniestro);
+
+    if (keysSubidas.length === 0) {
+      return { error: "No hay evidencias locales para respaldar" };
+    }
+
+    await prisma.evidencia.updateMany({
+      where: { no_siniestro, ubicacion_almacenamiento: "Local" },
+      data: { ubicacion_almacenamiento: "Nube" },
+    });
+
+    logger.success("Evidencias", "Carpeta respaldada en B2", {
+      no_siniestro,
+      total: keysSubidas.length,
+    });
+    return { ok: true, subidas: keysSubidas.length };
+  } catch (err: any) {
+    logger.error("Evidencias", "Error al respaldar carpeta", {
+      error: err.message,
+    });
+    return { error: "Error interno al respaldar evidencias" };
   }
 }
 

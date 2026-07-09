@@ -5,6 +5,22 @@ import {
   listarEvidenciasService,
   eliminarEvidenciaService,
 } from "../services/evidencias.service.js";
+import { respaldarEvidenciasExpedienteService } from "../services/evidencias.service.js";
+
+export async function respaldarEvidencias(req: AuthRequest, res: Response) {
+  const no_siniestro = req.params.no_siniestro;
+  if (typeof no_siniestro !== "string") {
+    return res.status(400).json({ error: "Número de siniestro inválido" });
+  }
+
+  const resultado = await respaldarEvidenciasExpedienteService(no_siniestro);
+
+  if ("error" in resultado) {
+    return res.status(400).json(resultado);
+  }
+
+  return res.status(200).json(resultado);
+}
 
 function esError(r: unknown): r is { error: string } {
   return typeof r === "object" && r !== null && "error" in r;

@@ -14,6 +14,7 @@ import {
   soloAdminOOperador,
 } from "../middleware/auth.middleware.js";
 import { fileURLToPath } from "url";
+import { respaldarEvidencias } from "../controllers/evidencias.controller.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -100,5 +101,13 @@ router.delete(
     }
   }
 );
+
+  // POST /api/expedientes/:no_siniestro/evidencias/respaldar
+  router.post(
+    "/respaldar",
+    verificarToken,
+    soloAdminOOperador,
+    respaldarEvidencias
+  );
 
 export default router;
