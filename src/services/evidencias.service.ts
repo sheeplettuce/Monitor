@@ -3,7 +3,8 @@ import { logger } from "../utils/logger.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { subirCarpetaEvidencias } from "./backup.service.js";
+import { subirCarpetaEvidencias, generarUrlFirmada, eliminarArchivoB2 } from "./backup.service.js";
+
 
 export type ServiceError = { error: string };
 
@@ -56,14 +57,20 @@ export async function listarEvidenciasService(no_siniestro: string) {
       orderBy: { fecha_carga: "desc" },
     });
 
-    return data.map((e) => ({
-      id: e.id,
-      no_siniestro: e.no_siniestro,
-      tipo: e.tipo,
-      nombre_archivo: e.nombre_archivo,
-      ruta: e.ruta,
-      fecha_carga: e.fecha_carga,
-    }));
+    return await Promise.all(
+      data.map(async (e) => ({
+        id: e.id,
+        no_siniestro: e.no_siniestro,
+        tipo: e.tipo,
+        nombre_archivo: e.nombre_archivo,
+        ruta:
+          e.ubicacion_almacenamiento === "Nube" && e.ruta
+            ? await generarUrlFirmada(e.ruta)
+            : e.ruta,
+        ubicacion_almacenamiento: e.ubicacion_almacenamiento,
+        fecha_carga: e.fecha_carga,
+      }))
+    );
   } catch (err: any) {
     return { error: "Error al obtener evidencias" };
   }
@@ -77,9 +84,13 @@ export async function eliminarEvidenciaService(
     if (!evidencia) return { error: "Evidencia no encontrada" };
 
     if (evidencia.ruta) {
-      const relativa = evidencia.ruta.replace(/^\/evidencias\//, "");
-      const rutaAbsoluta = path.join(EVIDENCIAS_DIR, relativa);
-      if (fs.existsSync(rutaAbsoluta)) fs.unlinkSync(rutaAbsoluta);
+      if (evidencia.ubicacion_almacenamiento === "Nube") {
+        await eliminarArchivoB2(evidencia.ruta);
+      } else {
+        const relativa = evidencia.ruta.replace(/^\/evidencias\//, "");
+        const rutaAbsoluta = path.join(EVIDENCIAS_DIR, relativa);
+        if (fs.existsSync(rutaAbsoluta)) fs.unlinkSync(rutaAbsoluta);
+      }
     }
 
     await prisma.evidencia.delete({ where: { id } });
@@ -98,6 +109,9 @@ export async function respaldarEvidenciasExpedienteService(
 ): Promise<{ ok: true; subidas: number } | ServiceError> {
   try {
     const carpetaLocal = path.join(EVIDENCIAS_DIR, no_siniestro);
+    const evidenciasLocales = await prisma.evidencia.findMany({
+      where: { no_siniestro, ubicacion_almacenamiento: "Local" },
+    });
 
     const keysSubidas = await subirCarpetaEvidencias(carpetaLocal, no_siniestro);
 
@@ -105,10 +119,16 @@ export async function respaldarEvidenciasExpedienteService(
       return { error: "No hay evidencias locales para respaldar" };
     }
 
-    await prisma.evidencia.updateMany({
-      where: { no_siniestro, ubicacion_almacenamiento: "Local" },
-      data: { ubicacion_almacenamiento: "Nube" },
-    });
+    // Empareja cada evidencia en BD con su key subida por nombre de archivo
+    for (const ev of evidenciasLocales) {
+      const key = keysSubidas.find((k) => k.endsWith(ev.nombre_archivo ?? ""));
+      if (!key) continue;
+
+      await prisma.evidencia.update({
+        where: { id: ev.id },
+        data: { ruta: key, ubicacion_almacenamiento: "Nube" },
+      });
+    }
 
     logger.success("Evidencias", "Carpeta respaldada en B2", {
       no_siniestro,

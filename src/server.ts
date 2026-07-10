@@ -24,6 +24,7 @@ import levantamientoRoutes from "./routes/levantamiento.routes.js";
 import checklistRoutes from "./routes/checklist.routes.js";
 import comentario from "./routes/comentario.routes.js";
 import formatosRoutes from "./routes/formatos.routes.js";
+import backupRoutes from "./routes/backup.routes.js";
 
 import { seedAseguradoras } from "./utils/seedAseguradoras.js";
 
@@ -105,6 +106,7 @@ app.use("/api", levantamientoRoutes);
 app.use("/api", checklistRoutes);
 app.use("/api", comentario);
 app.use("/api", formatosRoutes);
+app.use("/api/backup", backupRoutes);
 
 app.get("/", (_, res) => {
   res.json({
