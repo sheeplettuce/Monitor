@@ -1,11 +1,13 @@
 import { Router } from "express";
 import {
   listarExpedientes,
+  listarExpedientesPendientes,
   obtenerExpediente,
   crearExpediente,
   actualizarExpediente,
   eliminarExpediente,
   listarAseguradoras,
+  listarExpedientesNube,
 } from "../controllers/expedientes.controller.js";
 import {
   verificarToken,
@@ -18,6 +20,12 @@ import estadosRoutes from "./estados.routes.js";
 const router = Router();
 
 router.get("/", verificarToken, listarExpedientes);
+router.get("/pendientes", verificarToken, listarExpedientesPendientes);
+router.get("/aseguradoras", verificarToken, listarAseguradoras);
+
+router.get("/", verificarToken, listarExpedientes);
+router.get("/pendientes", verificarToken, listarExpedientesPendientes);
+router.get("/nube", verificarToken, listarExpedientesNube);
 router.get("/aseguradoras", verificarToken, listarAseguradoras);
 
 router.use("/:no_siniestro/evidencias", evidenciasRoutes);

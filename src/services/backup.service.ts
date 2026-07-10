@@ -4,6 +4,9 @@ import { NodeHttpHandler } from "@smithy/node-http-handler";
 import { Agent as HttpsAgent } from "https";
 import fs from "fs";
 import path from "path";
+import { prisma } from "../config/prisma.js";
+import { sincronizarUbicacionExpedienteService } from "./evidencias.service.js";
+import { eliminarCarpetaSiVacia } from "../jobs/backup.job.js";
 
 const b2 = new S3Client({
   region: process.env.B2_REGION,
@@ -82,8 +85,35 @@ export async function subirCarpetaEvidencias(
     const key = `evidencias/${no_siniestro}/${rutaRelativa.split(path.sep).join("/")}`;
 
     await subirArchivoRespaldo(rutaAbsoluta, key);
+
+    // Mismo patrón que ejecutarRespaldo: marcar la evidencia como Nube
+    // y guardar la key de B2 en `ruta` en vez de la ruta local.
+    await prisma.evidencia.updateMany({
+      where: {
+        no_siniestro,
+        nombre_archivo: entry.name,
+        ubicacion_almacenamiento: "Local",
+      },
+      data: {
+        ruta: key,
+        ubicacion_almacenamiento: "Nube",
+      },
+    });
+
     fs.unlinkSync(rutaAbsoluta); // borra el local solo si la subida no tronó
     keysSubidas.push(key);
+  }
+
+  // Sincroniza expediente.ubicacion_almacenamiento (pasa a "Nube" solo si
+  // ya no le queda ninguna evidencia Local).
+  await sincronizarUbicacionExpedienteService(no_siniestro);
+
+  // Limpia la carpeta del expediente si quedó vacía (mismo comportamiento
+  // que el respaldo completo).
+  try {
+    eliminarCarpetaSiVacia(carpetaLocal);
+  } catch (err: any) {
+    console.error(`No se pudo limpiar carpeta de ${no_siniestro}:`, err.message);
   }
 
   return keysSubidas;

@@ -1,11 +1,13 @@
 import { Response } from "express";
 import {
   listarExpedientesService,
+  listarExpedientesPendientesService,
   obtenerExpedienteService,
   crearExpedienteService,
   actualizarExpedienteService,
   eliminarExpedienteService,
   listarAseguradorasService,
+  listarExpedientesNubeService,
 } from "../services/expedientes.service.js";
 import { AuthRequest } from "../middleware/auth.middleware.js";
 
@@ -25,6 +27,26 @@ function esError(result: unknown): result is { error: string } {
 
 export async function listarExpedientes(req: AuthRequest, res: Response) {
   const result = await listarExpedientesService();
+
+  if (esError(result)) {
+    return res.status(500).json(result);
+  }
+
+  return res.json(result);
+}
+
+export async function listarExpedientesPendientes(req: AuthRequest, res: Response) {
+  const result = await listarExpedientesPendientesService();
+
+  if (esError(result)) {
+    return res.status(500).json(result);
+  }
+
+  return res.json(result);
+}
+
+export async function listarExpedientesNube(req: AuthRequest, res: Response) {
+  const result = await listarExpedientesNubeService();
 
   if (esError(result)) {
     return res.status(500).json(result);

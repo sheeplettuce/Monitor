@@ -133,6 +133,76 @@ export async function listarExpedientesService(): Promise<
   }
 }
 
+export async function listarExpedientesPendientesService(): Promise<
+  ExpedienteResumen[] | ServiceError
+> {
+  try {
+    // Filtra directo por la columna del expediente, que ya se mantiene
+    // sincronizada en sincronizarUbicacionExpedienteService: pasa a "Nube"
+    // solo cuando ya no le queda ninguna evidencia Local. No hace falta
+    // revisar evidencia[] aquí.
+    return await prisma.expediente.findMany({
+      where: { ubicacion_almacenamiento: "Local" },
+      select: {
+        no_siniestro: true,
+        factura: true,
+        orden: true,
+        asesor: true,
+        fecha_ingreso: true,
+        estado: true,
+        marca: true,
+        placas: true,
+        tipo: true,
+        color: true,
+        modelo: true,
+        nombre_cliente: true,
+        telefono_cliente: true,
+        aseguradora: { select: { id: true, nombre: true } },
+      },
+      orderBy: { fecha_ingreso: "desc" },
+    });
+  } catch (err: any) {
+    logger.error("Expedientes", "Error al listar expedientes pendientes", {
+      error: err.message,
+    });
+    return { error: "Error al obtener la lista de expedientes pendientes" };
+  }
+}
+
+export async function listarExpedientesNubeService(): Promise <
+  ExpedienteResumen[] | ServiceError
+> {
+  try {
+    // Inverso de listarExpedientesPendientesService: expedientes cuya
+    // columna ya fue sincronizada a "Nube" (todas sus evidencias subidas).
+    return await prisma.expediente.findMany({
+      where: { ubicacion_almacenamiento: "Nube" },
+      select: {
+        no_siniestro: true,
+        factura: true,
+        orden: true,
+        asesor: true,
+        fecha_ingreso: true,
+        estado: true,
+        marca: true,
+        placas: true,
+        tipo: true,
+        color: true,
+        modelo: true,
+        nombre_cliente: true,
+        telefono_cliente: true,
+        aseguradora: { select: { id: true, nombre: true } },
+      },
+      orderBy: { fecha_ingreso: "desc" },
+    });
+  } catch (err: any) {
+    logger.error("Expedientes", "Error al listar expedientes en nube", {
+      error: err.message,
+    });
+    return { error: "Error al obtener la lista de expedientes en la nube" };
+  }
+}
+
 export async function obtenerExpedienteService(
   no_siniestro: string
 ): Promise<

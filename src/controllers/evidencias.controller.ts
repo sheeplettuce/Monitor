@@ -105,5 +105,9 @@ export async function eliminarEvidencia(req: AuthRequest, res: Response) {
     return res.status(status).json(result);
   }
 
-  return res.json(result);
+  return res.json({
+    ok: result.ok,
+    mensaje: `Carpeta del expediente ${result.carpetaEliminada} eliminada completamente`,
+    carpetaEliminada: result.carpetaEliminada,
+  });
 }

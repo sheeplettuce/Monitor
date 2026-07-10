@@ -16,6 +16,39 @@ function subcarpetaPorTipo(tipo: string): string {
   return tipo === "documento" ? "DOCUMENTOS REPARACION" : "evidencias";
 }
 
+/**
+ * Sincroniza expediente.ubicacion_almacenamiento en base al estado real
+ * de sus evidencias: "Nube" solo si TODAS las evidencias están en Nube,
+ * "Local" si hay al menos una Local o si no tiene evidencias.
+ * Debe llamarse después de cualquier operación que cree, suba o elimine
+ * una evidencia.
+ */
+export async function sincronizarUbicacionExpedienteService(
+  no_siniestro: string
+): Promise<void> {
+  try {
+    const total = await prisma.evidencia.count({ where: { no_siniestro } });
+    const enNube =
+      total === 0
+        ? 0
+        : await prisma.evidencia.count({
+            where: { no_siniestro, ubicacion_almacenamiento: "Nube" },
+          });
+
+    const nuevaUbicacion = total > 0 && enNube === total ? "Nube" : "Local";
+
+    await prisma.expediente.update({
+      where: { no_siniestro },
+      data: { ubicacion_almacenamiento: nuevaUbicacion },
+    });
+  } catch (err: any) {
+    logger.error("Evidencias", "Error al sincronizar ubicación del expediente", {
+      no_siniestro,
+      error: err.message,
+    });
+  }
+}
+
 export async function crearEvidenciaService(datos: {
   no_siniestro: string;
   tipo: string;
@@ -42,6 +75,8 @@ export async function crearEvidenciaService(datos: {
       },
     });
 
+    await sincronizarUbicacionExpedienteService(datos.no_siniestro);
+
     logger.success("Evidencias", "Evidencia registrada", { id: evidencia.id });
     return evidencia;
   } catch (err: any) {
@@ -58,18 +93,32 @@ export async function listarEvidenciasService(no_siniestro: string) {
     });
 
     return await Promise.all(
-      data.map(async (e) => ({
-        id: e.id,
-        no_siniestro: e.no_siniestro,
-        tipo: e.tipo,
-        nombre_archivo: e.nombre_archivo,
-        ruta:
-          e.ubicacion_almacenamiento === "Nube" && e.ruta
-            ? await generarUrlFirmada(e.ruta)
-            : e.ruta,
-        ubicacion_almacenamiento: e.ubicacion_almacenamiento,
-        fecha_carga: e.fecha_carga,
-      }))
+      data.map(async (e) => {
+        let urlNube: string | null = null;
+
+        if (e.ubicacion_almacenamiento === "Nube" && e.ruta) {
+          try {
+            // Verifica que sea una key de B2 (empieza con "evidencias/")
+            if (e.ruta.startsWith("evidencias/")) {
+              urlNube = await generarUrlFirmada(e.ruta);
+            }
+          } catch (err: any) {
+            console.error(`Error generando URL para ${e.nombre_archivo}:`, err.message);
+          }
+        }
+
+        return {
+          id: e.id,
+          no_siniestro: e.no_siniestro,
+          tipo: e.tipo,
+          nombre_archivo: e.nombre_archivo,
+          ruta: e.ruta,
+          url_nube: urlNube,
+          key_nube: e.ruta,
+          ubicacion_almacenamiento: e.ubicacion_almacenamiento,
+          fecha_carga: e.fecha_carga,
+        };
+      })
     );
   } catch (err: any) {
     return { error: "Error al obtener evidencias" };
@@ -78,24 +127,45 @@ export async function listarEvidenciasService(no_siniestro: string) {
 
 export async function eliminarEvidenciaService(
   id: number
-): Promise<{ ok: true } | ServiceError> {
+): Promise<{ ok: true; eliminada: string } | ServiceError> {
   try {
     const evidencia = await prisma.evidencia.findUnique({ where: { id } });
     if (!evidencia) return { error: "Evidencia no encontrada" };
 
-    if (evidencia.ruta) {
-      if (evidencia.ubicacion_almacenamiento === "Nube") {
+    // 1. Eliminar archivo de B2 si está en nube
+    if (evidencia.ubicacion_almacenamiento === "Nube" && evidencia.ruta) {
+      try {
         await eliminarArchivoB2(evidencia.ruta);
-      } else {
-        const relativa = evidencia.ruta.replace(/^\/evidencias\//, "");
-        const rutaAbsoluta = path.join(EVIDENCIAS_DIR, relativa);
-        if (fs.existsSync(rutaAbsoluta)) fs.unlinkSync(rutaAbsoluta);
+      } catch (err: any) {
+        console.warn(`No se pudo eliminar de B2: ${evidencia.ruta}`, err.message);
       }
     }
 
+    // 2. Eliminar archivo local si existe
+    if (evidencia.ruta) {
+      const rutaLocal = path.join(EVIDENCIAS_DIR, "..", evidencia.ruta);
+      if (fs.existsSync(rutaLocal)) {
+        try {
+          fs.unlinkSync(rutaLocal);
+        } catch (err: any) {
+          console.warn(`No se pudo eliminar archivo local: ${rutaLocal}`, err.message);
+        }
+      }
+    }
+
+    // 3. Eliminar registro de BD
     await prisma.evidencia.delete({ where: { id } });
-    logger.success("Evidencias", "Evidencia eliminada", { id });
-    return { ok: true };
+
+    // 4. Recalcular ubicación del expediente (puede pasar a Nube si ya
+    //    no quedan evidencias Local, o quedarse en Local si no tiene ninguna)
+    await sincronizarUbicacionExpedienteService(evidencia.no_siniestro);
+
+    logger.success("Evidencias", "Evidencia eliminada", {
+      id,
+      nombre: evidencia.nombre_archivo,
+      no_siniestro: evidencia.no_siniestro,
+    });
+    return { ok: true, eliminada: evidencia.nombre_archivo ?? "archivo sin nombre" };
   } catch (err: any) {
     logger.error("Evidencias", "Error al eliminar evidencia", { error: err.message });
     return { error: "Error interno al eliminar evidencia" };
@@ -129,6 +199,9 @@ export async function respaldarEvidenciasExpedienteService(
         data: { ruta: key, ubicacion_almacenamiento: "Nube" },
       });
     }
+
+    // Recalcular ubicación del expediente en base al estado final de sus evidencias
+    await sincronizarUbicacionExpedienteService(no_siniestro);
 
     logger.success("Evidencias", "Carpeta respaldada en B2", {
       no_siniestro,

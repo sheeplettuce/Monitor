@@ -47,7 +47,18 @@ export function agregarLog(entry: Omit<BackupLogEntry, "id" | "fecha">): BackupL
   return nuevo;
 }
 
-export function limpiarLogs(): void {
+export function limpiarLogs(): number {
   ensureLogFile();
-  fs.writeFileSync(LOG_FILE, "[]", "utf-8");
+  const logs = leerLogs();
+  const cantidad = logs.length;
+  
+  try {
+    fs.writeFileSync(LOG_FILE, "[]", "utf-8");
+    console.log(`[Logs] Limpiados ${cantidad} registros de ${LOG_FILE}`);
+  } catch (err: any) {
+    console.error(`[Logs] Error al limpiar: ${err.message}`);
+    throw err;
+  }
+  
+  return cantidad;
 }
