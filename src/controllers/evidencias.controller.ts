@@ -107,7 +107,7 @@ export async function eliminarEvidencia(req: AuthRequest, res: Response) {
 
   return res.json({
     ok: result.ok,
-    mensaje: `Carpeta del expediente ${result.carpetaEliminada} eliminada completamente`,
-    carpetaEliminada: result.carpetaEliminada,
+    mensaje: `Carpeta del expediente ${result.eliminada} eliminada completamente`,
+    carpetaEliminada: result.eliminada,
   });
 }

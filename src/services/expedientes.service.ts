@@ -133,7 +133,7 @@ export async function listarExpedientesService(): Promise<
   }
 }
 
-export async function listarExpedientesPendientesService(): Promise<
+export async function listarExpedientesPendientesService(): Promise <
   ExpedienteResumen[] | ServiceError
 > {
   try {
@@ -141,8 +141,15 @@ export async function listarExpedientesPendientesService(): Promise<
     // sincronizada en sincronizarUbicacionExpedienteService: pasa a "Nube"
     // solo cuando ya no le queda ninguna evidencia Local. No hace falta
     // revisar evidencia[] aquí.
+    // Además, solo puede aparecer como "listo para subir" un expediente
+    // que ya cerró su ciclo (estado "Salida") — mientras esté activo
+    // (Ingreso, Restauracion, Pendiente_de_salida) no debe respaldarse
+    // ni desaparecer del gestor de estados con evidencia local aún viva.
     return await prisma.expediente.findMany({
-      where: { ubicacion_almacenamiento: "Local" },
+      where: {
+        ubicacion_almacenamiento: "Local",
+        estado: "Salida",
+      },
       select: {
         no_siniestro: true,
         factura: true,

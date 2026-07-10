@@ -27,6 +27,24 @@ export async function sincronizarUbicacionExpedienteService(
   no_siniestro: string
 ): Promise<void> {
   try {
+    const expediente = await prisma.expediente.findUnique({
+      where: { no_siniestro },
+      select: { estado: true },
+    });
+
+    // Solo puede pasar a "Nube" un expediente que ya cerró su ciclo.
+    // Mientras esté activo (Ingreso, Restauracion, Pendiente_de_salida)
+    // se queda forzado en "Local" sin importar cuántas evidencias ya
+    // se hayan subido a B2 — evita que desaparezca del gestor de estados
+    // o del selector de "pendientes" antes de tiempo.
+    if (expediente?.estado !== "Salida") {
+      await prisma.expediente.update({
+        where: { no_siniestro },
+        data: { ubicacion_almacenamiento: "Local" },
+      });
+      return;
+    }
+
     const total = await prisma.evidencia.count({ where: { no_siniestro } });
     const enNube =
       total === 0
@@ -178,6 +196,25 @@ export async function respaldarEvidenciasExpedienteService(
   no_siniestro: string
 ): Promise<{ ok: true; subidas: number } | ServiceError> {
   try {
+    const expediente = await prisma.expediente.findUnique({
+      where: { no_siniestro },
+      select: { estado: true },
+    });
+
+    if (!expediente) {
+      return { error: "Expediente no encontrado" };
+    }
+
+    // Solo se puede respaldar a la nube un expediente que ya cerró su
+    // ciclo completo. Mientras siga activo en el gestor de estados
+    // (Ingreso, Restauracion, Pendiente_de_salida) no se sube nada,
+    // aunque ya tenga evidencia local lista.
+    if (expediente.estado !== "Salida") {
+      return {
+        error: "Solo se puede respaldar a la nube un expediente con estado Salida",
+      };
+    }
+
     const carpetaLocal = path.join(EVIDENCIAS_DIR, no_siniestro);
     const evidenciasLocales = await prisma.evidencia.findMany({
       where: { no_siniestro, ubicacion_almacenamiento: "Local" },
