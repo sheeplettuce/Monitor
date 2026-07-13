@@ -42,8 +42,13 @@ function crearCarpetaFormatos(no_siniestro: string): string {
   return carpetaFormatos;
 }
 
+function esError(result: unknown): result is ServiceError {
+  return typeof result === "object" && result !== null && "error" in result;
+}
+
 export async function generarFormatoService(
-  no_siniestro: string
+  no_siniestro: string,
+  carpetaDestino?: string
 ): Promise<{ ruta: string; nombre: string } | ServiceError> {
   try {
     const expediente = await prisma.expediente.findUnique({
@@ -70,8 +75,7 @@ export async function generarFormatoService(
     ws.getCell("E11").value = formatoFecha(expediente.fecha_valuacion);
     ws.getCell("K11").value = formatoFecha(expediente.fecha_autorizacion);
     ws.getCell("E13").value = formatoFecha(expediente.fecha_pzas_completas);
-    ws.getCell("K13").value = formatoFecha(expediente.unidad_terminada);
-    ws.getCell("E15").value = expediente.tecnico ?? "";
+    ws.getCell("K13").value = formatoFecha(expediente.fecha_entrega);
     ws.getCell("K15").value = expediente.mecanico ?? "";
 
     ws.getCell("D18").value = expediente.marca ?? "";
@@ -131,7 +135,7 @@ export async function generarFormatoService(
       }
     }
 
-    const carpetaFormatos = crearCarpetaFormatos(expediente.no_siniestro);
+    const carpetaFormatos = carpetaDestino ?? crearCarpetaFormatos(no_siniestro);
     const nombreArchivo = `EXPEDIENTE_${expediente.no_siniestro}.xlsx`;
     const rutaArchivo = path.join(carpetaFormatos, nombreArchivo);
     await workbook.xlsx.writeFile(rutaArchivo);
@@ -304,7 +308,8 @@ const CHECKLIST_MAP = new Map<string, ChecklistItemDef>(
 const VALOR_INDEX: Record<string, number> = { OK: 0, RE: 1, MA: 2, NA: 3 };
 
 export async function generarChecklistService(
-  no_siniestro: string
+  no_siniestro: string,
+  carpetaDestino?: string
 ): Promise<{ ruta: string; nombre: string } | ServiceError> {
   try {
     const checklist = await prisma.checklist.findFirst({
@@ -403,7 +408,8 @@ const FILAS_CONCEPTO_DER = [
 ];
 
 export async function generarLevantamientoService(
-  no_siniestro: string
+  no_siniestro: string,
+  carpetaDestino?: string
 ): Promise<{ ruta: string; nombre: string } | ServiceError> {
   try {
     const levantamiento = await prisma.levantamiento_danios.findFirst({
@@ -490,4 +496,49 @@ export async function generarLevantamientoService(
     logger.error("Formatos", "Error al generar levantamiento", { error: err.message });
     return { error: "Error interno al generar el levantamiento" };
   }
+}
+
+// ============================================================
+// GENERACIÓN PARA RESPALDO (no descarga)
+// ============================================================
+
+/**
+ * Genera los formatos disponibles directamente en la raíz de la carpeta
+ * del no_siniestro (no en FORMATOS/), para que subirCarpetaEvidencias los
+ * recoja y suba junto con evidencias y documentos en la misma pasada.
+ * El expediente es obligatorio; checklist y levantamiento se omiten en
+ * silencio si el expediente aún no los tiene registrados — no truena
+ * el respaldo completo por eso.
+ */
+export async function generarFormatosParaRespaldo(
+  no_siniestro: string,
+  carpetaDestino: string
+): Promise<{ ruta: string; nombre: string }[] | ServiceError> {
+  if (!fs.existsSync(carpetaDestino)) {
+    fs.mkdirSync(carpetaDestino, { recursive: true });
+  }
+
+  const generados: { ruta: string; nombre: string }[] = [];
+
+  const expediente = await generarFormatoService(no_siniestro, carpetaDestino);
+  if (esError(expediente)) {
+    return expediente;
+  }
+  generados.push(expediente);
+
+  const checklist = await generarChecklistService(no_siniestro, carpetaDestino);
+  if (!esError(checklist)) {
+    generados.push(checklist);
+  } else {
+    console.log(`Checklist omitido en respaldo de ${no_siniestro}: ${checklist.error}`);
+  }
+
+  const levantamiento = await generarLevantamientoService(no_siniestro, carpetaDestino);
+  if (!esError(levantamiento)) {
+    generados.push(levantamiento);
+  } else {
+    console.log(`Levantamiento omitido en respaldo de ${no_siniestro}: ${levantamiento.error}`);
+  }
+
+  return generados;
 }

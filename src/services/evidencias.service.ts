@@ -4,9 +4,13 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { subirCarpetaEvidencias, generarUrlFirmada, eliminarArchivoB2 } from "./backup.service.js";
-
+import { generarFormatosParaRespaldo } from "./formatos.service.js";
 
 export type ServiceError = { error: string };
+
+function esError<T>(valor: T | ServiceError): valor is ServiceError {
+  return typeof valor === "object" && valor !== null && "error" in valor;
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -216,6 +220,15 @@ export async function respaldarEvidenciasExpedienteService(
     }
 
     const carpetaLocal = path.join(EVIDENCIAS_DIR, no_siniestro);
+
+    // Genera EXPEDIENTE/CHECKLIST/LEVANTAMIENTO directo en la raíz del
+    // expediente, para que se suban y borren junto con el resto en el
+    // mismo paso de subirCarpetaEvidencias.
+    const formatos = await generarFormatosParaRespaldo(no_siniestro, carpetaLocal);
+    if (esError(formatos)) {
+      return formatos;
+    }
+
     const evidenciasLocales = await prisma.evidencia.findMany({
       where: { no_siniestro, ubicacion_almacenamiento: "Local" },
     });

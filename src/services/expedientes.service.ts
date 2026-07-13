@@ -12,7 +12,7 @@ export type DatosCrearExpediente = {
   fecha_valuacion?: string;
   fecha_autorizacion?: string;
   fecha_pzas_completas?: string;
-  unidad_terminada?: string;
+  fecha_entrega?: string;
   tecnico?: string;
   mecanico?: string;
   vehiculo?: string;
@@ -71,7 +71,7 @@ const CAMPOS_FECHA = [
   "fecha_valuacion",
   "fecha_autorizacion",
   "fecha_pzas_completas",
-  "unidad_terminada",
+  "fecha_entrega",
 ] as const;
 
 // Campos timestamp (ISO string con hora) que se guardan como Timestamp en BD
@@ -243,6 +243,25 @@ export async function crearExpedienteService(
     });
     if (existe) return { error: "Ya existe un expediente con ese No. Siniestro" };
 
+    // Campos obligatorios al ingreso según ERS RF4: datos del cliente y
+    // del vehículo son indispensables para identificar el siniestrado;
+    // fecha_ingreso es necesaria porque el sistema asigna estado "Ingreso"
+    // automáticamente al crear (RF6). fecha_entrega se exige aquí como
+    // la fecha de entrega comprometida desde el ingreso (decisión operativa).
+    const faltantes: string[] = [];
+    if (!datos.nombre_cliente?.trim()) faltantes.push("nombre_cliente");
+    if (!datos.telefono_cliente?.trim()) faltantes.push("telefono_cliente");
+    if (!datos.marca?.trim()) faltantes.push("marca");
+    if (!datos.placas?.trim()) faltantes.push("placas");
+    if (!datos.tipo?.trim()) faltantes.push("tipo");
+    if (!datos.modelo?.trim()) faltantes.push("modelo");
+    if (!datos.fecha_ingreso) faltantes.push("fecha_ingreso");
+    if (!datos.fecha_entrega) faltantes.push("fecha_entrega");
+
+    if (faltantes.length > 0) {
+      return { error: `Faltan campos obligatorios: ${faltantes.join(", ")}` };
+    }
+
     const expediente = await prisma.expediente.create({
       data: {
         no_siniestro:              datos.no_siniestro,
@@ -253,7 +272,7 @@ export async function crearExpedienteService(
         fecha_valuacion:           datos.fecha_valuacion      ? parseFecha(datos.fecha_valuacion)      : undefined,
         fecha_autorizacion:        datos.fecha_autorizacion   ? parseFecha(datos.fecha_autorizacion)   : undefined,
         fecha_pzas_completas:      datos.fecha_pzas_completas ? parseFecha(datos.fecha_pzas_completas) : undefined,
-        unidad_terminada:          datos.unidad_terminada     ? parseFecha(datos.unidad_terminada)     : undefined,
+        fecha_entrega:             datos.fecha_entrega        ? parseFecha(datos.fecha_entrega)        : undefined,
         tecnico:                   datos.tecnico,
         mecanico:                  datos.mecanico,
         vehiculo:                  datos.vehiculo,

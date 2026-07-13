@@ -118,6 +118,7 @@ model expediente {
   ubicacion_almacenamiento   ubicacion_enum         @default(Local)
   id_aseguradora             Int?
   creado_por                 Int?
+  fecha_entrega              DateTime?              @db.Date
   checklist                  checklist[]
   comentario                 comentario[]
   evidencia                  evidencia[]

@@ -23,6 +23,33 @@ export async function cambiarEstadoService(
       return { error: "El expediente ya se encuentra en ese estado" };
     }
 
+    // Al pasar a "Salida" son obligatorias: unidad_terminada (expediente)
+    // y fecha_entrega (checklist de salida). Sin ambas no se permite el cierre.
+    if (nuevo_estado === "Salida") {
+      const expedienteCompleto = await prisma.expediente.findUnique({
+        where: { no_siniestro },
+        select: { unidad_terminada: true },
+      });
+
+      if (!expedienteCompleto?.unidad_terminada) {
+        return { error: "Falta registrar la fecha de entrega del expediente" };
+      }
+
+      const checklist = await prisma.checklist.findFirst({
+        where: { no_siniestro },
+        orderBy: { id: "desc" },
+        select: { fecha_entrega: true },
+      });
+
+      if (!checklist) {
+        return { error: "No existe checklist de salida para este expediente" };
+      }
+
+      if (!checklist.fecha_entrega) {
+        return { error: "Falta registrar la fecha de entrega en el checklist" };
+      }
+    }
+
     // Administrador y Operador tienen el mismo nivel de acceso para
     // cambiar el estado a cualquier valor (ver matriz de roles IEEE 830).
     // Técnico nunca llega aquí: la ruta ya lo bloquea con soloAdminOOperador.

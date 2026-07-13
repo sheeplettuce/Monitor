@@ -82,6 +82,13 @@ export function eliminarCarpetaSiVacia(dir: string): void {
  * DOCUMENTOS REPARACION incluido) a B2. No toca la base de datos.
  * No borra los archivos locales — es exportación/backup, no migración.
  * Actualiza `progreso` en memoria para que el frontend haga polling.
+ *
+ * Solo se migra a Nube (y se marca como tal en BD) la evidencia de
+ * expedientes con estado "Salida". Un expediente activo (Ingreso,
+ * Restauracion, Pendiente_de_salida) se omite por completo aunque su
+ * carpeta ya esté físicamente dentro de EVIDENCIAS_DIR — evita que
+ * desaparezca del gestor de estados o del selector de "pendientes"
+ * antes de tiempo.
  */
 export async function ejecutarRespaldo(): Promise<{ subidas: number }> {
   if (progreso.corriendo) {
@@ -116,11 +123,33 @@ export async function ejecutarRespaldo(): Promise<{ subidas: number }> {
 
     progreso.total = archivos.length;
 
+    // Solo se puede migrar a Nube evidencia de expedientes que ya cerraron
+    // su ciclo (estado Salida). El respaldo masivo NO debe subir/mover
+    // evidencia de expedientes activos, aunque esté físicamente en la carpeta.
+    const expedientesSalida = new Set(
+      (
+        await prisma.expediente.findMany({
+          where: { estado: "Salida" },
+          select: { no_siniestro: true },
+        })
+      ).map((e) => e.no_siniestro)
+    );
+
     for (const entry of archivos) {
       const carpetaEntry = (entry as any).parentPath ?? (entry as any).path;
       const rutaAbsoluta = path.join(carpetaEntry, entry.name);
       const rutaRelativa = path.relative(EVIDENCIAS_DIR, rutaAbsoluta);
       const key = `evidencias/${rutaRelativa.split(path.sep).join("/")}`;
+
+      const partesRuta = rutaRelativa.split(path.sep);
+      const noSiniestroDeArchivo = partesRuta[0];
+
+      if (!noSiniestroDeArchivo || !expedientesSalida.has(noSiniestroDeArchivo)) {
+        // Expediente activo (o carpeta huérfana): no se toca, no cuenta
+        // como fallido, simplemente se omite del respaldo masivo.
+        progreso.procesados++;
+        continue;
+      }
 
       progreso.archivoActual = rutaRelativa;
 
