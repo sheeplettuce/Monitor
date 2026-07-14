@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Monitor — Panel de Control</title>
+<style>
+  body { background:#111; color:#ddd; font-family: Consolas, monospace; padding: 20px; }
+  h1 { color:#fff; font-size: 18px; margin-bottom: 12px; }
+  h2 { color:#aaa; font-size: 14px; margin: 20px 0 8px; border-bottom: 1px solid #333; padding-bottom: 4px; }
+  #estado { display:flex; flex-wrap:wrap; gap:16px; margin-bottom: 16px; }
+  .card { background:#1a1a1a; border:1px solid #333; padding:10px 14px; border-radius:4px; min-width:140px; }
+  .card .label { font-size:11px; color:#888; }
+  .card .value { font-size:15px; margin-top:2px; }
+  .ok { color:#4caf50; }
+  .fail { color:#e53935; }
+  .card-alerta { animation: parpadeo 1s infinite; border-color:#e53935; }
+  @keyframes parpadeo { 50% { background:#3a1010; } }
+
+  #logs-toolbar { display:flex; gap:8px; margin-bottom:8px; align-items:center; }
+  #logs-toolbar select, #logs-toolbar input { background:#1a1a1a; border:1px solid #333; color:#ddd; padding:5px 8px; }
+  #logs-toolbar button { padding:5px 12px; background:#2a2a2a; border:1px solid #444; color:#ddd; cursor:pointer; }
+  #logs { background:#0a0a0a; border:1px solid #333; padding:10px; height:350px; overflow-y:auto; font-size:12px; white-space:pre-wrap; }
+  .line-INFO { color:#5bc0de; }
+  .line-WARN { color:#f0ad4e; }
+  .line-ERROR { color:#d9534f; }
+  .line-SUCCESS { color:#5cb85c; }
+
+  table { width:100%; border-collapse: collapse; font-size: 12px; }
+  td, th { border-bottom: 1px solid #2a2a2a; padding: 4px 8px; text-align:left; }
+
+  #login-box { max-width: 300px; margin-top: 60px; }
+  #login-box input { display:block; width:100%; margin-bottom:10px; padding:8px; background:#1a1a1a; border:1px solid #333; color:#ddd; }
+  #login-box button { padding:8px 16px; background:#2a2a2a; border:1px solid #444; color:#ddd; cursor:pointer; }
+  #login-error { color:#e53935; font-size:12px; margin-top:8px; }
+  #panel-content { display:none; }
+  #logout-btn { float:right; font-size:12px; background:#1a1a1a; border:1px solid #333; color:#ddd; padding:4px 10px; cursor:pointer; }
+  label.toggle { font-size:12px; color:#aaa; }
+</style>
+</head>
+<body>
+  <div id="login-box">
+    <h1>Monitor — Acceso</h1>
+    <input id="username" placeholder="Usuario" autocomplete="username">
+    <input id="password" placeholder="Contraseña" type="password" autocomplete="current-password">
+    <button onclick="login()">Entrar</button>
+    <div id="login-error"></div>
+  </div>
+
+  <div id="panel-content">
+    <button id="logout-btn" onclick="logout()">Salir</button>
+    <h1>Monitor — Panel de Control</h1>
+
+    <label class="toggle">
+      <input type="checkbox" id="auto-refresh" checked onchange="toggleAutoRefresh()"> Auto-actualizar (3s)
+    </label>
+
+    <h2>Estado general</h2>
+    <div id="estado">Cargando...</div>
+
+    <h2>Verificaciones periódicas</h2>
+    <div id="checks">Cargando...</div>
+
+    <h2>Sincronización de expedientes</h2>
+    <div id="sync">Cargando...</div>
+
+    <h2>Historial de estados reciente</h2>
+    <table id="historial"><tbody><tr><td>Cargando...</td></tr></tbody></table>
+
+    <h2>Historial de arranques</h2>
+    <table id="uptime"><tbody><tr><td>Cargando...</td></tr></tbody></table>
+
+    <h2>Logs</h2>
+    <div id="logs-toolbar">
+      <select id="filtro-nivel" onchange="renderLogs()">
+        <option value="">Todos los niveles</option>
+        <option value="ERROR">ERROR</option>
+        <option value="WARN">WARN</option>
+        <option value="SUCCESS">SUCCESS</option>
+        <option value="INFO">INFO</option>
+      </select>
+      <input id="filtro-texto" placeholder="Buscar en logs..." oninput="renderLogs()">
+      <button onclick="descargarLogs()">Descargar .log</button>
+    </div>
+    <div id="logs">Cargando logs...</div>
+  </div>
+
+<script>
+const TOKEN_KEY = "monitor_panel_token";
+let intervalId = null;
+let logsCrudos = [];
+
+function claseLinea(linea) {
+  if (linea.includes("[ERROR]")) return "ERROR";
+  if (linea.includes("[WARN]")) return "WARN";
+  if (linea.includes("[SUCCESS]")) return "SUCCESS";
+  return "INFO";
+}
+
+function headers() {
+  return { 'Authorization': 'Bearer ' + localStorage.getItem(TOKEN_KEY) };
+}
+
+async function login() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const errorEl = document.getElementById('login-error');
+  errorEl.textContent = "";
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      errorEl.textContent = data.error || "Usuario o contraseña incorrectos";
+      return;
+    }
+
+    const data = await res.json();
+    if (!data.token) {
+      errorEl.textContent = "Respuesta de login inesperada";
+      return;
+    }
+
+    localStorage.setItem(TOKEN_KEY, data.token);
+    mostrarPanel();
+  } catch {
+    errorEl.textContent = "No se pudo conectar al servidor";
+  }
+}
+
+function logout() {
+  localStorage.removeItem(TOKEN_KEY);
+  if (intervalId) clearInterval(intervalId);
+  document.getElementById('panel-content').style.display = 'none';
+  document.getElementById('login-box').style.display = 'block';
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+}
+
+function mostrarPanel() {
+  document.getElementById('login-box').style.display = 'none';
+  document.getElementById('panel-content').style.display = 'block';
+  actualizar();
+  toggleAutoRefresh();
+}
+
+function toggleAutoRefresh() {
+  const activo = document.getElementById('auto-refresh').checked;
+  if (intervalId) clearInterval(intervalId);
+  if (activo) intervalId = setInterval(actualizar, 3000);
+}
+
+async function actualizar() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token) return logout();
+
+  try {
+    const h = await (await fetch('/api/health', { headers: headers() })).json();
+    const discoAlerta = Number(h.disco.libre_GB) < 5;
+    document.getElementById('estado').innerHTML = `
+      <div class="card ${!h.backend ? 'card-alerta' : ''}"><div class="label">Backend</div><div class="value ${h.backend ? 'ok' : 'fail'}">${h.backend ? 'OK' : 'CAÍDO'}</div></div>
+      <div class="card ${!h.database ? 'card-alerta' : ''}"><div class="label">Base de datos</div><div class="value ${h.database ? 'ok' : 'fail'}">${h.database ? 'Conectada' : 'Desconectada'}</div></div>
+      <div class="card ${discoAlerta ? 'card-alerta' : ''}"><div class="label">Disco</div><div class="value ${discoAlerta ? 'fail' : ''}">${h.disco.usado_GB}/${h.disco.total_GB} GB</div></div>
+      <div class="card"><div class="label">Evidencias</div><div class="value">${h.evidencias.archivos} archivos (${h.evidencias.tamaño_MB} MB)</div></div>
+      <div class="card"><div class="label">Expedientes</div><div class="value">${h.expedientes}</div></div>
+      <div class="card"><div class="label">RAM</div><div class="value">${h.ram.usada_MB}/${h.ram.total_MB} MB</div></div>
+    `;
+  } catch {
+    document.getElementById('estado').innerHTML = '<span class="fail">No se pudo conectar al servidor</span>';
+  }
+
+  try {
+    const c = await (await fetch('/api/diagnostico/checks', { headers: headers() })).json();
+    const ultima = c.ultimaEjecucion ? new Date(c.ultimaEjecucion).toLocaleString() : 'Nunca';
+    document.getElementById('checks').innerHTML = `
+      <div class="card"><div class="label">Última verificación</div><div class="value">${ultima}</div></div>
+      ${c.checks.map(ch => `
+        <div class="card ${!ch.ok ? 'card-alerta' : ''}">
+          <div class="label">${ch.nombre}</div>
+          <div class="value ${ch.ok ? 'ok' : 'fail'}">${ch.ok ? 'OK' : 'FALLÓ'}</div>
+        </div>
+      `).join('')}
+    `;
+  } catch {
+    document.getElementById('checks').innerHTML = '<span class="fail">No se pudieron cargar las verificaciones</span>';
+  }
+
+  try {
+    const s = await (await fetch('/api/diagnostico/sync-pendientes', { headers: headers() })).json();
+    const alerta = s.pendientes > 0;
+    document.getElementById('sync').innerHTML = `
+      <div class="card ${alerta ? 'card-alerta' : ''}">
+        <div class="label">Expedientes pendientes de subir a la nube</div>
+        <div class="value ${alerta ? 'fail' : 'ok'}">${s.pendientes}</div>
+      </div>
+    `;
+  } catch {
+    document.getElementById('sync').innerHTML = '<span class="fail">No se pudo consultar sincronización</span>';
+  }
+
+  try {
+    const hist = await (await fetch('/api/diagnostico/historial-reciente', { headers: headers() })).json();
+    document.getElementById('historial').innerHTML = `
+      <thead><tr><th>Expediente</th><th>Estado anterior</th><th>Estado nuevo</th><th>Fecha</th></tr></thead>
+      <tbody>${hist.map(r => `
+        <tr><td>${r.no_siniestro}</td><td>${r.estado_anterior ?? '—'}</td><td>${r.estado_nuevo}</td><td>${new Date(r.fecha_cambio).toLocaleString()}</td></tr>
+      `).join('')}</tbody>
+    `;
+  } catch {
+    document.getElementById('historial').innerHTML = '<tr><td class="fail">No se pudo cargar el historial</td></tr>';
+  }
+
+  try {
+    const up = await (await fetch('/api/diagnostico/uptime', { headers: headers() })).json();
+    document.getElementById('uptime').innerHTML = `
+      <tbody>${up.map(l => `<tr><td>${l}</td></tr>`).join('')}</tbody>
+    `;
+  } catch {
+    document.getElementById('uptime').innerHTML = '<tr><td class="fail">No se pudo cargar el historial de arranques</td></tr>';
+  }
+
+  try {
+    const res = await fetch('/api/logs', { headers: headers() });
+    if (res.status === 401 || res.status === 403) return logout();
+    logsCrudos = await res.json();
+    renderLogs();
+  } catch {
+    document.getElementById('logs').innerHTML = '<span class="fail">No se pudieron cargar los logs</span>';
+  }
+}
+
+function renderLogs() {
+  const nivel = document.getElementById('filtro-nivel').value;
+  const texto = document.getElementById('filtro-texto').value.toLowerCase();
+
+  const filtrados = logsCrudos.filter(l => {
+    if (nivel && claseLinea(l) !== nivel) return false;
+    if (texto && !l.toLowerCase().includes(texto)) return false;
+    return true;
+  });
+
+  document.getElementById('logs').innerHTML = filtrados
+    .map(l => `<div class="line-${claseLinea(l)}">${l}</div>`)
+    .join('');
+}
+
+async function descargarLogs() {
+  try {
+    const res = await fetch('/api/logs/download', { headers: headers() });
+    if (!res.ok) return;
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'app.log';
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch {}
+}
+
+if (localStorage.getItem(TOKEN_KEY)) {
+  mostrarPanel();
+}
+</script>
+</body>
+</html>

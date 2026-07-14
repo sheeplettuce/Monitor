@@ -2,6 +2,8 @@ import fs from "fs";
 import path from "path";
 
 const LOG_DIR = path.join(process.cwd(), "logs");
+const LOG_FILE = path.join(LOG_DIR, "app.log");
+const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 
 if (!fs.existsSync(LOG_DIR)) {
   fs.mkdirSync(LOG_DIR, { recursive: true });
@@ -15,18 +17,32 @@ function timestamp(): string {
 
 function colorize(level: LogLevel, msg: string): string {
   const colors: Record<LogLevel, string> = {
-    INFO:    "\x1b[36m",  // cyan
-    WARN:    "\x1b[33m",  // amarillo
-    ERROR:   "\x1b[31m",  // rojo
-    SUCCESS: "\x1b[32m",  // verde
+    INFO:    "\x1b[36m",
+    WARN:    "\x1b[33m",
+    ERROR:   "\x1b[31m",
+    SUCCESS: "\x1b[32m",
   };
   const reset = "\x1b[0m";
   return `${colors[level]}[${level}]\x1b[0m ${reset}${msg}`;
 }
 
+function rotarSiNecesario() {
+  try {
+    if (!fs.existsSync(LOG_FILE)) return;
+    if (fs.statSync(LOG_FILE).size < MAX_SIZE_BYTES) return;
+
+    const rotado = path.join(LOG_DIR, "app.log.1");
+    if (fs.existsSync(rotado)) fs.unlinkSync(rotado);
+    fs.renameSync(LOG_FILE, rotado);
+  } catch {
+    // si falla la rotación, seguimos escribiendo al archivo actual
+  }
+}
+
 function writeToFile(level: LogLevel, context: string, msg: string) {
+  rotarSiNecesario();
   const line = `[${timestamp()}] [${level}] [${context}] ${msg}\n`;
-  fs.appendFileSync(path.join(LOG_DIR, "app.log"), line);
+  fs.appendFileSync(LOG_FILE, line);
 }
 
 export function log(level: LogLevel, context: string, message: string, data?: unknown) {

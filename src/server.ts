@@ -26,6 +26,13 @@ import comentario from "./routes/comentario.routes.js";
 import formatosRoutes from "./routes/formatos.routes.js";
 import backupRoutes from "./routes/backup.routes.js";
 
+// GUI del back
+
+import logsRoutes from "./routes/logs.routes.js";
+import diagnosticoRoutes from "./routes/diagnostico.routes.js";
+import { registrarCheck, marcarEjecucionCompleta } from "./utils/statusStore.js";
+import fs from "fs";
+
 import { seedAseguradoras } from "./utils/seedAseguradoras.js";
 
 import path from "path";
@@ -41,6 +48,8 @@ app.use(
   "/evidencias",
   express.static(path.join(__dirname, "..", "evidencias"))
 );
+
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 const isWindows = process.platform === "win32";
 const isMac = process.platform === "darwin";
@@ -107,6 +116,8 @@ app.use("/api", checklistRoutes);
 app.use("/api", comentario);
 app.use("/api", formatosRoutes);
 app.use("/api/backup", backupRoutes);
+app.use("/api/logs", logsRoutes);
+app.use("/api/diagnostico", diagnosticoRoutes);
 
 app.get("/", (_, res) => {
   res.json({
@@ -137,26 +148,28 @@ app.get("/discovery", (_, res) => {
 // Status checks
 // ─────────────────────────────────────────────────────────────
 
-async function runStatusChecks() {
-  logger.info(
-    "Sistema",
-    "══════════ Iniciando verificación de estado ══════════"
-  );
-
-  await checkBackend(PORT);
-  await checkDatabase(prisma);
-
-  checkDisk();
-  checkEvidencias();
-
-  await checkFrontend(8081);
-
-  logger.info(
-    "Sistema",
-    "══════════ Verificación completada ══════════"
-  );
+async function ejecutarCheck(nombre: string, fn: () => Promise<any> | any) {
+  try {
+    await fn();
+    registrarCheck(nombre, true);
+  } catch (err) {
+    registrarCheck(nombre, false);
+    logger.error("Sistema", `Falló check: ${nombre}`, err);
+  }
 }
 
+async function runStatusChecks() {
+  logger.info("Sistema", "══════════ Iniciando verificación de estado ══════════");
+
+  await ejecutarCheck("Backend", () => checkBackend(PORT));
+  await ejecutarCheck("Base de datos", () => checkDatabase(prisma));
+  await ejecutarCheck("Disco", () => checkDisk());
+  await ejecutarCheck("Evidencias", () => checkEvidencias());
+  await ejecutarCheck("Frontend", () => checkFrontend(8081));
+
+  marcarEjecucionCompleta();
+  logger.info("Sistema", "══════════ Verificación completada ══════════");
+}
 // ─────────────────────────────────────────────────────────────
 // Startup
 // ─────────────────────────────────────────────────────────────
@@ -200,6 +213,11 @@ async function startServer() {
 
       runStatusChecks();
       setInterval(runStatusChecks, 5 * 60 * 1000);
+
+      function registrarUptime() {
+      const linea = `[${new Date().toISOString()}] Servidor iniciado (PID ${process.pid})\n`;
+      fs.appendFileSync(path.join(process.cwd(), "logs", "uptime.log"), linea);
+}
     });
 
     server.on("error", (err) => {
