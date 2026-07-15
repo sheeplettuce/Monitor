@@ -47,6 +47,8 @@
     "@types/node": "^25.9.1",
     "@types/pg": "^8.20.0",
     "dotenv": "^17.4.2",
+    "electron": "^43.1.0",
+    "electron-builder": "^26.15.3",
     "esbuild": "0.19.12",
     "prisma": "^5.22.0",
     "ts-node-dev": "^2.0.0",
