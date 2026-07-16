@@ -283,11 +283,10 @@ const CHECKLIST_ITEMS: ChecklistItemDef[] = [
     row: 40 + i,
     grupo: "derecha" as GrupoChecklist,
   })),
-  // ⚠️ Bloque sin encabezado propio en el archivo — etiqueta provisional, valida y ajusta el nombre "sistema" si tu BD usa otro.
   ...[
-    "Cabina General", "Cofre", "Defensa", "Cabina izq", "Cabina der", "Alerones izq", "Alerones der",
+    "Cofre", "Defensa", "Cabina izq", "Cabina der", "Alerones izq", "Alerones der",
   ].map((nombre_item, i) => ({
-    sistema: "REVISION EXTERIOR",
+    sistema: "Cabina General",
     nombre_item,
     row: 50 + i,
     grupo: "derecha" as GrupoChecklist,
@@ -295,7 +294,10 @@ const CHECKLIST_ITEMS: ChecklistItemDef[] = [
 ];
 
 function normalizar(txt: string): string {
-  return txt.trim().toLowerCase().replace(/\s+/g, " ").replace(/[:\s]+$/, "");
+  return txt
+    .toLowerCase()
+    .replace(/:/g, "")
+    .replace(/\s+/g, "");
 }
 
 const CHECKLIST_MAP = new Map<string, ChecklistItemDef>(

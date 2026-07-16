@@ -9555,3 +9555,56 @@
 [2026-07-14T19:01:46.999Z] [INFO] [Evidencias] Conteo de archivos | {"archivos":0,"tamaño_MB":"0.0 MB"}
 [2026-07-14T19:01:47.004Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
 [2026-07-14T19:01:47.006Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-07-15T17:49:18.021Z] [SUCCESS] [Backend] Servidor iniciado | {"puerto":3000}
+[2026-07-15T17:49:18.023Z] [INFO] [Red] Servicio mDNS anunciado | {"tipo":"_monitor._tcp"}
+[2026-07-15T17:49:18.025Z] [INFO] [Red] IP local | {"ip":"192.168.56.1"}
+[2026-07-15T17:49:18.026Z] [INFO] [Red] Nombre del servidor | {"hostname":"DESKTOP-TGATAIA","dns":"DESKTOP-TGATAIA.local"}
+[2026-07-15T17:49:18.028Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-07-15T17:49:18.317Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-07-15T17:49:18.352Z] [ERROR] [PostgreSQL] Fallo en la conexión | {"error":"\nInvalid `prisma.$queryRaw()` invocation:\n\n\nerror: Environment variable not found: DATABASE_URL.\n  -->  schema.prisma:10\n   | \n 9 |   provider = \"postgresql\"\n10 |   url      = env(\"DATABASE_URL\")\n   | \n\nValidation Error Count: 1"}
+[2026-07-15T17:49:18.802Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"117.8","libre_GB":"9.1"}
+[2026-07-15T17:49:18.805Z] [WARN] [Disco] Espacio bajo: solo 9.1GB libres
+[2026-07-15T17:49:18.810Z] [WARN] [Evidencias] Directorio no encontrado | {"ruta":"C:\\backkkk\\evidencias"}
+[2026-07-15T17:49:18.906Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-07-15T17:49:18.910Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-07-15T17:50:53.776Z] [ERROR] [Auth] Error en login | {"error":"\nInvalid `prisma.usuario.findUnique()` invocation in\nc:\\backkkk\\Monitor\\src\\services\\auth.service.ts:8:42\n\n  5 \n  6 export async function loginService(username: string, password: string) {\n  7   try {\n→ 8     const usuario = await prisma.usuario.findUnique(\nerror: Environment variable not found: DATABASE_URL.\n  -->  schema.prisma:10\n   | \n 9 |   provider = \"postgresql\"\n10 |   url      = env(\"DATABASE_URL\")\n   | \n\nValidation Error Count: 1"}
+[2026-07-15T17:51:02.246Z] [ERROR] [Auth] Error en login | {"error":"\nInvalid `prisma.usuario.findUnique()` invocation in\nc:\\backkkk\\Monitor\\src\\services\\auth.service.ts:8:42\n\n  5 \n  6 export async function loginService(username: string, password: string) {\n  7   try {\n→ 8     const usuario = await prisma.usuario.findUnique(\nerror: Environment variable not found: DATABASE_URL.\n  -->  schema.prisma:10\n   | \n 9 |   provider = \"postgresql\"\n10 |   url      = env(\"DATABASE_URL\")\n   | \n\nValidation Error Count: 1"}
+[2026-07-15T17:54:18.321Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-07-15T17:54:18.452Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-07-15T17:54:18.460Z] [ERROR] [PostgreSQL] Fallo en la conexión | {"error":"\nInvalid `prisma.$queryRaw()` invocation:\n\n\nerror: Environment variable not found: DATABASE_URL.\n  -->  schema.prisma:10\n   | \n 9 |   provider = \"postgresql\"\n10 |   url      = env(\"DATABASE_URL\")\n   | \n\nValidation Error Count: 1"}
+[2026-07-15T17:54:18.833Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"117.2","libre_GB":"9.7"}
+[2026-07-15T17:54:18.834Z] [WARN] [Disco] Espacio bajo: solo 9.7GB libres
+[2026-07-15T17:54:18.836Z] [WARN] [Evidencias] Directorio no encontrado | {"ruta":"C:\\backkkk\\evidencias"}
+[2026-07-15T17:54:18.858Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-07-15T17:54:18.865Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-07-15T17:59:18.338Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-07-15T17:59:18.438Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-07-15T17:59:18.442Z] [ERROR] [PostgreSQL] Fallo en la conexión | {"error":"\nInvalid `prisma.$queryRaw()` invocation:\n\n\nerror: Environment variable not found: DATABASE_URL.\n  -->  schema.prisma:10\n   | \n 9 |   provider = \"postgresql\"\n10 |   url      = env(\"DATABASE_URL\")\n   | \n\nValidation Error Count: 1"}
+[2026-07-15T17:59:18.740Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"118.0","libre_GB":"8.9"}
+[2026-07-15T17:59:18.740Z] [WARN] [Disco] Espacio bajo: solo 8.9GB libres
+[2026-07-15T17:59:18.742Z] [WARN] [Evidencias] Directorio no encontrado | {"ruta":"C:\\backkkk\\evidencias"}
+[2026-07-15T17:59:18.745Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-07-15T17:59:18.747Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-07-16T15:01:58.124Z] [SUCCESS] [Backend] Servidor iniciado | {"puerto":3000}
+[2026-07-16T15:01:58.126Z] [INFO] [Red] Servicio mDNS anunciado | {"tipo":"_monitor._tcp"}
+[2026-07-16T15:01:58.128Z] [INFO] [Red] IP local | {"ip":"192.168.56.1"}
+[2026-07-16T15:01:58.128Z] [INFO] [Red] Nombre del servidor | {"hostname":"DESKTOP-TGATAIA","dns":"DESKTOP-TGATAIA.local"}
+[2026-07-16T15:01:58.130Z] [INFO] [Sistema] ══════════ Iniciando verificación de estado ══════════
+[2026-07-16T15:01:58.274Z] [SUCCESS] [Backend] Servidor en línea | {"puerto":3000}
+[2026-07-16T15:01:58.316Z] [ERROR] [PostgreSQL] Fallo en la conexión | {"error":"\nInvalid `prisma.$queryRaw()` invocation:\n\n\nerror: Environment variable not found: DATABASE_URL.\n  -->  schema.prisma:10\n   | \n 9 |   provider = \"postgresql\"\n10 |   url      = env(\"DATABASE_URL\")\n   | \n\nValidation Error Count: 1"}
+[2026-07-16T15:01:58.474Z] [INFO] [Disco] Estado del disco local | {"total_GB":"126.9","usado_GB":"120.1","libre_GB":"6.8"}
+[2026-07-16T15:01:58.475Z] [WARN] [Disco] Espacio bajo: solo 6.8GB libres
+[2026-07-16T15:01:58.477Z] [WARN] [Evidencias] Directorio no encontrado | {"ruta":"C:\\backkkk\\evidencias"}
+[2026-07-16T15:01:58.548Z] [WARN] [Auth] Token inválido o expirado
+[2026-07-16T15:01:58.562Z] [WARN] [Frontend] No disponible (sin conexión o no iniciado) | {"puerto":8081}
+[2026-07-16T15:01:58.564Z] [INFO] [Sistema] ══════════ Verificación completada ══════════
+[2026-07-16T15:01:58.567Z] [WARN] [Auth] Token inválido o expirado
+[2026-07-16T15:01:58.574Z] [WARN] [Auth] Token inválido o expirado
+[2026-07-16T15:01:58.582Z] [WARN] [Auth] Token inválido o expirado
+[2026-07-16T15:01:58.587Z] [WARN] [Auth] Token inválido o expirado
+[2026-07-16T15:01:58.591Z] [WARN] [Auth] Token inválido o expirado
+[2026-07-16T15:01:58.598Z] [WARN] [Auth] Token inválido o expirado
+[2026-07-16T15:01:58.602Z] [WARN] [Auth] Token inválido o expirado
+[2026-07-16T15:01:58.607Z] [WARN] [Auth] Token inválido o expirado
+[2026-07-16T15:02:09.899Z] [ERROR] [Auth] Error en login | {"error":"\nInvalid `prisma.usuario.findUnique()` invocation in\nc:\\backkkk\\Monitor\\src\\services\\auth.service.ts:8:42\n\n  5 \n  6 export async function loginService(username: string, password: string) {\n  7   try {\n→ 8     const usuario = await prisma.usuario.findUnique(\nerror: Environment variable not found: DATABASE_URL.\n  -->  schema.prisma:10\n   | \n 9 |   provider = \"postgresql\"\n10 |   url      = env(\"DATABASE_URL\")\n   | \n\nValidation Error Count: 1"}
+[2026-07-16T15:02:10.873Z] [ERROR] [Auth] Error en login | {"error":"\nInvalid `prisma.usuario.findUnique()` invocation in\nc:\\backkkk\\Monitor\\src\\services\\auth.service.ts:8:42\n\n  5 \n  6 export async function loginService(username: string, password: string) {\n  7   try {\n→ 8     const usuario = await prisma.usuario.findUnique(\nerror: Environment variable not found: DATABASE_URL.\n  -->  schema.prisma:10\n   | \n 9 |   provider = \"postgresql\"\n10 |   url      = env(\"DATABASE_URL\")\n   | \n\nValidation Error Count: 1"}
